@@ -1,7 +1,7 @@
 
 var gcm = require('node-gcm');
 
-var meassageData = {
+var messageData = {
       priority: 'high',
       contentAvailable: true,
       delayWhileIdle: true,
@@ -25,14 +25,14 @@ var GoogleServerAPIKey = 'AIzaSyCPnh643pd2rg4Oig7rRhjKK8J7j4SgWTc'; // Google Se
 
 var registrationTokens = ['regToken1', 'regToken2'];
 
-sendPush(meassageData, GoogleServerAPIKey, registrationTokens);
+sendPush(messageData, GoogleServerAPIKey, registrationTokens);
 
 
 // This function is responsible to send push notification.
-function sendPush(meassageData, GoogleServerAPIKey, registrationTokens){
+function sendPush(messageData, GoogleServerAPIKey, registrationTokens){
 
 	// Create a message with given value
-    var message = new gcm.Message(meassageData);
+    var message = new gcm.Message(messageData);
 
     // Set up the sender with you API key 
     var sender = new gcm.Sender(GoogleServerAPIKey);
