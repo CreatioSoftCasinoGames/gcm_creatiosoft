@@ -6,13 +6,12 @@ var messageData = {
       contentAvailable: true,
       delayWhileIdle: true,
       data: {
-        company: 'Creatiosoft',
-        location: 'Noida'
-      },
-      notification: {
-        title: "notification title",
+        title: "Creatiosoft",         // this will be the title in push sent
+        subtitle: "Only for games",   // this will be the subtitle in push sent
         icon: "ic_launcher",
         body: "notification body"
+        company: 'Creatiosoft',
+        location: 'Noida'
       }
 }
 
