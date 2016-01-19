@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Test suits controller</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          <h1 id="test-suits-controller">Test suits controller</h1>
+
+          
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="ai-client.html">
+                    ai-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="check_all_keys_for_cutomLeaderBoard_separately.html">
+                    check_all_keys_for_cutomLeaderBoard_separately.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="game_start_after_game_over.html">
+                    game_start_after_game_over.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="pomelo-node-client.html">
+                    pomelo-node-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_and_jackpot_data_verification.html">
+                    profile_and_jackpot_data_verification.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management.html">
+                    profile_cache_management.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management_client_data.html">
+                    profile_cache_management_client_data.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_data_manipulaton.html">
+                    profile_data_manipulaton.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="run_test_suits.html">
+                    run_test_suits.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_calculation_time_to_all_player_count.html">
+                    send_calculation_time_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_gameStarted_to_all_player_count.html">
+                    send_gameStarted_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_game_over_to_all_player_count.html">
+                    send_game_over_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="validate_key_presence_in_all_broadcasts.html">
+                    validate_key_presence_in_all_broadcasts.js
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        
+        
+      
+        
+        <h2 id="how-it-works">How it works</h2>
+
+        
+      
+        
+        <blockquote>
+<p>It is used to controll the test cases we have written somewhere else 
+or in other file. We simply run the node command which will run our
+test case file from here. We already have a list of files so we run 
+only one test case at a time. We can handle the responses of any 
+request and broadcast data as well.</p>
+</blockquote>
+
+        
+      
+        
+        <p> Declare all the required node packages</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> sys = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sys'</span>)
+<span class="hljs-keyword">var</span> exec = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).exec;
+<span class="hljs-keyword">var</span> util  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);
+<span class="hljs-keyword">var</span> spawn = <span class="hljs-built_in">require</span>(<span class="hljs-string">'child_process'</span>).spawn;
+<span class="hljs-keyword">var</span> _  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'underscore'</span>);</pre></div>
+        
+      
+        
+        <h2 id="list-of-all-test-suits">List of all test suits</h2>
+
+        
+      
+        
+        <p>Simply use any of the following (one case at a time)</p>
+<blockquote>
+<p>var testName = “game_start_after_game_over.js”;</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+
+<span class="hljs-keyword">var</span> testSuits = [];</pre></div>
+        
+      
+        
+        <p>testSuits.push(“game_start_after_game_over.js”);
+testSuits.push(“send_game_over_to_all_player_count.js”);
+testSuits.push(“send_calculation_time_to_all_player_count.js”);
+testSuits.push(“send_gameStarted_to_all_player_count.js”);
+testSuits.push(“validate_key_presence_in_all_broadcasts.js”);
+testSuits.push(“check_all_keys_for_cutomLeaderBoard_separately.js”);
+testSuits.push(“profile_data_manipulaton.js”);
+testSuits.push(“profile_and_jackpot_data_verification.js”);
+testSuits.push(“profile_cache_management.js”);</p>
+
+        
+          <div class='highlight'><pre>testSuits.push(<span class="hljs-string">"profile_cache_management_client_data.js"</span>);</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Interval timer after which a new player will join the game
+We simply run the terminal command here after a regular interval
+(Eg: node test_name)
+All the responses and broadcasts is recieved here in Buffer format
+We first convert this buffer into string and then parse it as object</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> childProcceses = [];</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Define counter and limits for players to be added for this test</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> playerCounter = <span class="hljs-number">1</span>, playerLimit = <span class="hljs-number">5</span>, counter = <span class="hljs-number">0</span>;
+_.each(testSuits, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">testSuit</span>) </span>{</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Outout the name of test case we are running</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\nExecuting test suite - \n'</span> + testSuit + <span class="hljs-string">'\n'</span>)
+  <span class="hljs-keyword">var</span> refreshIntervalId = setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> node = spawn(<span class="hljs-string">'node'</span>, [testSuit]);
+    childProcceses.push(node)
+    <span class="hljs-built_in">console</span>.log(playerCounter + <span class="hljs-string">' player added in game!'</span>);
+    node.stdout.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+      data = data.toString(<span class="hljs-string">'utf-8'</span>);
+      <span class="hljs-keyword">if</span>(data[<span class="hljs-number">0</span>] == <span class="hljs-string">"{"</span>) {
+        data = <span class="hljs-built_in">JSON</span>.parse(data);
+        <span class="hljs-keyword">if</span>(data.killProcess) {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Case failed - '</span> + data.reason)
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'In jackpot case there are chances that it happened because redis take some time to update values, use callback to resolve!'</span>);
+          _.each(childProcceses, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">process</span>) </span>{
+            clearInterval(refreshIntervalId);
+            process.kill();  
+          });
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">if</span>(data.route == <span class="hljs-string">"gameOver"</span>) {
+            counter++;
+            <span class="hljs-built_in">console</span>.log(counter + <span class="hljs-string">"gameOver broadcast received."</span>);
+            <span class="hljs-keyword">if</span>(counter == playerLimit) {
+              counter = <span class="hljs-number">0</span>;
+            }
+          } 
+        }
+      }
+    });</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Output only if there is any error occured during test case processing</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>    node.stderr.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stderr: '</span> + data);
+    });</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Exit from the controller</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>    node.on(<span class="hljs-string">'exit'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">code</span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'child process exited with code '</span> + code);
+    });</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Condition to restrict adding players in the game</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">if</span>(playerCounter == playerLimit) {
+      clearInterval(refreshIntervalId);
+    }</pre></div>
+        
+      
+        
+        <blockquote>
+<p>playCounter increment in order to add and check Add Player condition </p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>    playerCounter++;
+
+  }, <span class="hljs-number">500</span>);
+});</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

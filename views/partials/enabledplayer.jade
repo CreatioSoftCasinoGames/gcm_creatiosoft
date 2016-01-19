@@ -1,0 +1,17 @@
+.enabledplayer.partial.hide
+  table(class="table table-bordered")
+   thead
+     tr
+       td Player Id
+       td Player Name
+       td Player Mobile No
+       td Player Password
+       td Enable
+   tbody
+     tr(ng-repeat="enablePlayer in enabledPlayers")
+       td {{enablePlayer.playerRefForAdmin}}
+       td {{enablePlayer.playerName}}
+       td {{enablePlayer.playerMobile}}
+       td {{enablePlayer.playerPassword}}
+       td
+         a(href="" ng-click="doDisable(enablePlayer.playerToken)" class="btn btn-primary") Disable

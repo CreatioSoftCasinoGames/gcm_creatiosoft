@@ -1,0 +1,21 @@
+.agentheader.header.hide
+  ul(class="nav navbar-nav" id="navbar")
+    li
+      a()
+        span#name
+        | &nbsp;||
+        span#token
+        | &nbsp;||
+        span#accbal
+    li
+      a(class="nav-link" ng-click="getNewPlayer()") Registration / Disabled
+    li
+      a(class="nav-link" ng-click="getEnabledPlayer()") Enabled Players
+    li
+      a(class="nav-link" ng-click="more()") Recharge Player
+    li
+      a(class="nav-link" ng-click="fundWithdrawal()") Withdrawal
+    li
+      a(class="nav-link" ng-click="getMyTransactions()") My Transaction
+    li
+      a(class="nav-link" ng-click="Logout()") Logout

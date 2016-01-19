@@ -1,0 +1,16 @@
+.board.hide.partial(ng-model="seats")
+	h1 Total Players - {{totalPlayers}}
+	h1 My Token - {{playerId}}
+	h1 Pot Value - {{pot}}
+	h3 Chaal amount - {{chaalAmount}}
+	h3 Blind amount - {{blindAmount}}
+	h3 Next Player Move Id - {{nextPlayerId}}
+
+	.well
+		a(href="" class="btn btn-primary" ng-click="sit(channelId)") Sit
+		a(href="" class="btn btn-danger" ng-click="leave(channelId)") Leave
+	.well
+		a(href='' ng-click="chaal(channelId)" class="btn btn-primary") Chaal
+		a(href='' ng-click="blind(channelId)" class="btn btn-primary") Blind
+		a(href='' ng-click="pack(channelId)" class="btn btn-primary") Pack
+		a(href='' ng-click="seeCard(channelId)" class="btn btn-primary") See Card

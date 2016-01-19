@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>profile_and_jackpot_data_verification.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>profile_and_jackpot_data_verification.js</h1>
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="ai-client.html">
+                    ai-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="check_all_keys_for_cutomLeaderBoard_separately.html">
+                    check_all_keys_for_cutomLeaderBoard_separately.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="game_start_after_game_over.html">
+                    game_start_after_game_over.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="pomelo-node-client.html">
+                    pomelo-node-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_and_jackpot_data_verification.html">
+                    profile_and_jackpot_data_verification.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management.html">
+                    profile_cache_management.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management_client_data.html">
+                    profile_cache_management_client_data.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_data_manipulaton.html">
+                    profile_data_manipulaton.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="run_test_suits.html">
+                    run_test_suits.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_calculation_time_to_all_player_count.html">
+                    send_calculation_time_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_gameStarted_to_all_player_count.html">
+                    send_gameStarted_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_game_over_to_all_player_count.html">
+                    send_game_over_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="validate_key_presence_in_all_broadcasts.html">
+                    validate_key_presence_in_all_broadcasts.js
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> slotConstants = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../../game-server/config/slotConstants.json'</span>)[<span class="hljs-string">"development"</span>];
+<span class="hljs-keyword">var</span> backendFetcher = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../../game-server/app/util/backendFetcher'</span>);
+<span class="hljs-keyword">var</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>).createClient(slotConstants.redisPort, slotConstants.redisHost, {});
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'underscore'</span>);
+<span class="hljs-keyword">var</span> sockets = {}
+
+<span class="hljs-keyword">var</span> app = {
+  get: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> slotConstants
+  }
+}
+
+
+<span class="hljs-keyword">var</span> Robot = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tokens, sendSpin</span>)</span>{
+	<span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+  <span class="hljs-keyword">this</span>.pomelo = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./pomelo-node-client.js"</span>).pomelo;
+  <span class="hljs-keyword">this</span>.tokens = tokens;
+  <span class="hljs-keyword">this</span>.sendSpin = sendSpin;
+  <span class="hljs-keyword">this</span>.gameStartedSent = <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">this</span>.caseFailed = {killProcess: <span class="hljs-literal">true</span>};
+
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"jackpot"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{</pre></div>
+        
+      
+        
+        <p>console.log(data);</p>
+
+        
+          <div class='highlight'><pre>  });
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"customLeaderBoard"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{</pre></div>
+        
+      
+        
+        <p>that.checkKeyPresence(data, function(data) {
+     console.log(data);
+ })
+console.log(data);</p>
+
+        
+          <div class='highlight'><pre>  });
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"gameOver"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+  	that.checkKeyPresence(<span class="hljs-string">'gameOver'</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{});</pre></div>
+        
+      
+        
+        <p>TODO: Start a new game from here using connector.entryHandler.levelUpdate request</p>
+
+        
+          <div class='highlight'><pre>  });
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"calculationTime"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+  	that.checkKeyPresence(<span class="hljs-string">'calculationTime'</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{});</pre></div>
+        
+      
+        
+        <p>TODO: Just to check if this broadcast is coming or not</p>
+
+        
+          <div class='highlight'><pre>  });
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"gameStarted"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{</pre></div>
+        
+      
+        
+        <p>TODO: Just to check if this broadcast is coming or not</p>
+
+        
+          <div class='highlight'><pre>    that.gameStartedSent = <span class="hljs-literal">true</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(data));
+    that.checkKeyPresence(<span class="hljs-string">'gameStarted'</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{});
+  });
+};
+
+Robot.prototype = {
+  run: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+    that.pomelo.init({
+      host: <span class="hljs-string">"127.0.0.1"</span>,
+      port: <span class="hljs-string">"3014"</span>,
+      log: <span class="hljs-literal">true</span>
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+      that.pomelo.request(<span class="hljs-string">"gate.gateHandler.getConnector"</span>, {is_guest: <span class="hljs-literal">true</span>, loginType: <span class="hljs-string">"login"</span>, device_id: that.deviseId, deviceType: <span class="hljs-string">"Android"</span>, gameVersion: <span class="hljs-string">"1.0.0"</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-keyword">if</span>(data.loginSuccess){
+          <span class="hljs-built_in">console</span>.log(data)
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Key mismatch !"</span>);
+        }
+      });
+    });
+  },
+
+  connectPomelo: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+    that.pomelo.init({
+      host: <span class="hljs-string">"127.0.0.1"</span>,
+      port: <span class="hljs-string">"3010"</span>,
+      log: <span class="hljs-literal">true</span>
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      that.sessionId = that.pomelo.socket.socket.sessionid;
+      sockets[that.sessionId] =  _.extend({}, that.pomelo);
+      that.pomelo.request(<span class="hljs-string">"connector.entryHandler.enter"</span>, {login_token: that.tokens.login_token, previous_login_token: that.tokens.previous_login_token}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        that.checkKeyPresence(<span class="hljs-string">"enter"</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">checkPass</span>)</span>{
+          <span class="hljs-keyword">if</span>(checkPass) {
+            that.startGame();
+          }
+        });
+      });
+    }); 
+  },</pre></div>
+        
+      
+        
+        <blockquote>
+<p>This will join a player in a machine and start spinning on behalf of this player as well</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>  startGame: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">var</span> loginToken = that.tokens.login_token;
+      that.pomelo.request(<span class="hljs-string">"connector.entryHandler.joinMachine"</span>, {machineId: <span class="hljs-number">1</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+      that.checkKeyPresence(<span class="hljs-string">"joinMachine"</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">checkPass</span>)</span>{
+        <span class="hljs-keyword">if</span>(checkPass) {
+          <span class="hljs-keyword">if</span>(data.startsIn == <span class="hljs-number">0</span> &amp;&amp; data.endsIn == <span class="hljs-number">0</span>) {
+            that.caseFailed.reason = <span class="hljs-string">'The game will not start as startsIn and endsIn equals 0'</span>;
+            that.caseFailed.data = data;
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+          } <span class="hljs-keyword">else</span> {</pre></div>
+        
+      
+        
+        <p>Create a timout for tournament start to check if gameStarted fired or not
+Make sure the time is +1 sec to timeout of this tournament</p>
+
+        
+          <div class='highlight'><pre>          	setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+          		<span class="hljs-keyword">if</span>(!that.gameStartedSent) {
+                that.caseFailed.reason = <span class="hljs-string">'gameStarted broadcast didn\'t fired !! \n Make sure you have restarted the pomelo for this test suit.'</span>;
+                that.caseFailed.data = {};
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+					    } <span class="hljs-keyword">else</span> {
+					    	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'gameStarted broadcast has been fired.'</span>);
+					    }
+					    that.gameStartedSent = <span class="hljs-literal">false</span>;
+          	}, <span class="hljs-number">6000</span>);
+            <span class="hljs-keyword">if</span>(that.sendSpin) {
+              <span class="hljs-keyword">var</span> spinInterval = setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+                <span class="hljs-keyword">var</span> bet = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * (<span class="hljs-number">1000</span> - <span class="hljs-number">10</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">100</span>; <span class="hljs-comment">// Bet range (10-1000)</span>
+                <span class="hljs-keyword">var</span> win = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * (<span class="hljs-number">1000</span> - <span class="hljs-number">0</span> + <span class="hljs-number">1</span>)) + <span class="hljs-number">100</span>; <span class="hljs-comment">// Win range (0-3000)</span>
+                <span class="hljs-keyword">var</span> effectiveCoins = win-bet;
+                redis.hgetall(<span class="hljs-string">"jackpot_details"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>)</span>{
+                    <span class="hljs-keyword">var</span> preMinJackpot     = <span class="hljs-built_in">parseInt</span>(data.min_amount);
+                    <span class="hljs-keyword">var</span> preMajorJackpot   = <span class="hljs-built_in">parseInt</span>(data.major_amount); 
+                    <span class="hljs-keyword">var</span> postMinJackpot    = preMinJackpot + <span class="hljs-built_in">Math</span>.ceil(bet*(<span class="hljs-number">2</span>/<span class="hljs-number">100</span>));
+                    <span class="hljs-keyword">var</span> postMajorJackpot  = preMajorJackpot + <span class="hljs-built_in">Math</span>.ceil(bet*(<span class="hljs-number">2</span>/<span class="hljs-number">100</span>));
+
+                    sockets[that.sessionId].request(<span class="hljs-string">"slot.slotHandler.spinStatus"</span>, {coinsBet: bet, coinsWin: win}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+                      that.checkKeyPresence(<span class="hljs-string">"spinStatus"</span>, data, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">checkPass</span>)</span>{
+                        <span class="hljs-keyword">if</span>(checkPass) {</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Get jackpot values, update on backend and verify for correct data, 
+timer  is given in order to let our code update values on backend 
+then we proceed the verification process</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>                          redis.hgetall(<span class="hljs-string">"jackpot_details"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, data</span>)</span>{
+                            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">parseInt</span>(data.min_amount)!= postMinJackpot) {
+                              that.caseFailed.reason = <span class="hljs-string">'Wrong ! Min jackpot updated on redis!'</span>;
+                              that.caseFailed.data = <span class="hljs-string">""</span>;
+                              <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+                            }
+                            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">parseInt</span>(data.major_amount) != postMajorJackpot) {
+                              that.caseFailed.reason = <span class="hljs-string">'Wrong ! Major jackpot updated on redis!'</span>;
+                              that.caseFailed.data = <span class="hljs-string">""</span>;
+                              <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+                            }
+                          });</pre></div>
+        
+      
+        
+        <blockquote>
+<p>Stop spinning and restart game case check</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>                          <span class="hljs-keyword">if</span>(!!data.code &amp;&amp; data.code == <span class="hljs-number">550</span>) {
+                            clearInterval(spinInterval)
+                            setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div>
+        
+      
+        
+        <p>console.log(‘Start a new game!’)</p>
+
+        
+          <div class='highlight'><pre>                              that.startGame();
+                            }, <span class="hljs-number">5000</span>)
+                          }
+                        }
+                      });
+                    });
+                });
+              }, <span class="hljs-number">4000</span>);
+            }
+          }
+        }
+      });
+    })
+  },
+
+  checkKeyPresence: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">route, object, cb</span>) </span>{
+    <span class="hljs-keyword">var</span> expectedKeys = [];
+    <span class="hljs-keyword">if</span>(route == <span class="hljs-string">"enter"</span>) {
+      expectedKeys = 	[	<span class="hljs-string">'code'</span>, <span class="hljs-string">'message'</span>, <span class="hljs-string">'route'</span> ].sort();;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (route == <span class="hljs-string">"joinMachine"</span>) {
+      expectedKeys = 	[	<span class="hljs-string">'endsIn'</span>, <span class="hljs-string">'gameProgress'</span>, <span class="hljs-string">'level'</span>, <span class="hljs-string">'machineId'</span>, <span class="hljs-string">'machineName'</span>, <span class="hljs-string">'playerId'</span>,
+                        <span class="hljs-string">'playerPoints'</span>, <span class="hljs-string">'pointsRequired'</span>, <span class="hljs-string">'route'</span>, <span class="hljs-string">'startsIn'</span>, <span class="hljs-string">'success'</span>, <span class="hljs-string">'tournamentId'</span>, <span class="hljs-string">'tournamentStart'</span> ].sort();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (route == <span class="hljs-string">"spinStatus"</span>) {
+      expectedKeys = 	[	<span class="hljs-string">'code'</span>, <span class="hljs-string">'msg'</span>, <span class="hljs-string">'playerPoints'</span>, <span class="hljs-string">'route'</span>, <span class="hljs-string">'success'</span> ].sort();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (route == <span class="hljs-string">'gameOver'</span>) {
+    	expectedKeys =	[	<span class="hljs-string">'id'</span>, <span class="hljs-string">'machine_id'</span>, <span class="hljs-string">'machine_name'</span>, <span class="hljs-string">'point'</span>, <span class="hljs-string">'prize'</span>, <span class="hljs-string">'rank'</span>, <span class="hljs-string">'route'</span>, <span class="hljs-string">'success'</span>, <span class="hljs-string">'uid'</span>	];
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (route == <span class="hljs-string">'calculationTime'</span>) {
+    	expectedKeys =	[	<span class="hljs-string">'route'</span>, <span class="hljs-string">'startsIn'</span>	];
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (route == <span class="hljs-string">'gameStarted'</span>) {
+    	expectedKeys =	[	<span class="hljs-string">'pot'</span>, <span class="hljs-string">'route'</span>	];
+    } <span class="hljs-keyword">else</span> {</pre></div>
+        
+      
+        
+        <p>Expecting this case is for jackpot data only (because of missing route key in onject)</p>
+
+        
+          <div class='highlight'><pre>      expectedKeys =  [ <span class="hljs-string">'major'</span>, <span class="hljs-string">'major_id'</span>, <span class="hljs-string">'min'</span>, <span class="hljs-string">'min_id'</span> ]
+    }
+
+    <span class="hljs-keyword">var</span> presentKeys = _.keys(object).sort();
+    <span class="hljs-keyword">if</span>(!_.isEqual(presentKeys, expectedKeys)) {
+      that.caseFailed.reason = <span class="hljs-string">'All keys are not present in route response - '</span> + route;
+      that.caseFailed.data = object;
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+      cb(<span class="hljs-literal">false</span>);
+    } <span class="hljs-keyword">else</span> {
+      cb(<span class="hljs-literal">true</span>);</pre></div>
+        
+      
+        
+        <blockquote>
+<blockquote>
+<p>Check nested json if exists in any response</p>
+</blockquote>
+</blockquote>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">if</span>(route == <span class="hljs-string">"joinMachine"</span>) {
+        <span class="hljs-keyword">this</span>.checkNestedKeys(<span class="hljs-string">"joinMachine/gameProgress"</span>, object.gameProgress);
+      }
+    }
+  },
+
+  checkNestedKeys: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">route, object</span>) </span>{
+    <span class="hljs-keyword">var</span> expectedKeys = [];
+    <span class="hljs-keyword">if</span> (route == <span class="hljs-string">"joinMachine/gameProgress"</span>) {
+      expectedKeys =  [ <span class="hljs-string">'awards'</span>, <span class="hljs-string">'machineNumber'</span>, <span class="hljs-string">'pot'</span>, <span class="hljs-string">'remainingList'</span>, <span class="hljs-string">'topThreeList'</span>, <span class="hljs-string">'totalPlayers'</span> ].sort();
+    }
+    <span class="hljs-keyword">var</span> presentKeys = _.keys(object).sort();
+    <span class="hljs-keyword">if</span>(!_.isEqual(presentKeys, expectedKeys)) {
+      that.caseFailed.reason = <span class="hljs-string">'All keys are not present in route response - '</span> + route;
+      that.caseFailed.data = object;
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(that.caseFailed));
+    }
+  }
+
+}
+
+userAccessToken = <span class="hljs-built_in">Math</span>.random().toString(<span class="hljs-number">36</span>).slice(<span class="hljs-number">2</span>) + <span class="hljs-built_in">Math</span>.random().toString(<span class="hljs-number">16</span>).slice(<span class="hljs-number">2</span>);
+backendFetcher.post(<span class="hljs-string">"/api/v1/sessions.json"</span>, {is_guest: <span class="hljs-literal">true</span>, device_id: userAccessToken, device: <span class="hljs-string">"Android"</span>, game_version: <span class="hljs-string">"1.0"</span>}, app, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
+  redis.sadd(<span class="hljs-string">"game_players"</span>, <span class="hljs-string">"game_player:"</span> + user.login_token);
+  redis.hmset(<span class="hljs-string">"game_player:"</span>+user.login_token, <span class="hljs-string">"uid"</span>, user.id, <span class="hljs-string">"previous_login_token"</span>, user.previous_login_token, <span class="hljs-string">"player_id"</span>, user.id, <span class="hljs-string">"first_name"</span>, user.first_name, <span class="hljs-string">"player_name"</span>, (user.first_name + <span class="hljs-string">' '</span> + user.last_name), <span class="hljs-string">"player_level"</span>, user.current_level, <span class="hljs-string">"player_image"</span>, user.image_url, <span class="hljs-string">"online"</span>, <span class="hljs-number">1</span>);
+  <span class="hljs-keyword">var</span> robot = <span class="hljs-keyword">new</span> Robot(user, <span class="hljs-literal">true</span>);
+  robot.connectPomelo();
+});</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+.transhist.partial.hide
+  table(class="table table-bordered")
+    thead
+      tr
+        td Date
+        td Transaction Id
+        td Remark
+        td Amount
+        td Trasfer Type
+        td Status
+    tbody
+      tr(ng-repeat="transaction in transactions")
+        td {{transaction.transDate}}
+        td {{transaction.fundTransferId}}
+        td {{transaction.fundRemark}}
+        td {{transaction.fundAmount}}
+        td {{transaction.fundTransferType}}
+        td {{transaction.fundStatus}}

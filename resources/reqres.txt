@@ -1,0 +1,131 @@
+Http Request for server;
+
+Register Player :
+endpoint : registerplayer
+method : POST
+request : {
+            "playerName":"Prateek",
+            "playerEmail" : "prateek@gmail.com",
+            "playerMobile" : "9654023769",
+            "playerPassword" : "1234",
+            "playerAvatarId" : "plavt1232"
+          }
+response : {
+           status: true
+           info: "New user information saved on server"
+           playerInfo: {
+           __v: 0
+           playerPassword: "1234"
+           playerAvatarId: "plavt1232"
+           playerMobile: 9654023769
+           playerEmail: "prateek@gmail.com"
+           playerName: "Prateek"
+           playerToken: "4JmWbCLQg"
+           _id: "564de1e28369333a23677a4a"
+           isEnabled: false
+           }-
+           }
+**************
+route : database.dbHandler.verifyLoginDetail
+payload : {
+                      playerToken:"4JmWbCLQg",
+                      playerEmail: "prateek@gmail.com",
+                      playerPassword: "1234"
+                  }
+callback : {status:true,host: "",port: ""}
+polmelo req : pomelo.request(route,payload,callback);
+
+*************
+route : connector.entryHandler.getAllExistingTables
+payload : {
+                                playerToken:"4JmWbCLQg",
+                                playerEmail: "prateek@gmail.com"
+          }
+callback : {"status":true,"rooms":[{"_id":"564c57cb0e4fb90d16ed9edf","roomName":"room100","bootAmount":100,"minAllowed":2000,"maxAllowed":20000,"maxPlayer":6,"chaalLimit":6,"potLimit":5000,"blindLimit":3,"__v":0,"tableInstance":3},{"_id":"564c57cb0e4fb90d16ed9edd","roomName":"room25naan","bootAmount":25,"minAllowed":500,"maxAllowed":5000,"maxPlayer":7,"chaalLimit":8,"potLimit":5000,"blindLimit":3,"__v":0,"tableInstance":3},{"_id":"564c57cb0e4fb90d16ed9ee0","roomName":"room200","bootAmount":200,"minAllowed":4000,"maxAllowed":40000,"maxPlayer":6,"chaalLimit":6,"potLimit":5000,"blindLimit":3,"__v":0,"tableInstance":3},{"_id":"564c57cb0e4fb90d16ed9ee2","roomName":"room1000","bootAmount":1000,"minAllowed":20000,"maxAllowed":2001,"maxPlayer":6,"chaalLimit":6,"potLimit":5000,"blindLimit":3,"__v":0,"tableInstance":3},{"_id":"564c57cb0e4fb90d16ed9ee1","roomName":"room500","bootAmount":500,"minAllowed":10000,"maxAllowed":100000,"maxPlayer":6,"chaalLimit":6,"potLimit":5000,"blindLimit":3,"__v":0,"tableInstance":3},{"_id":"564c57cb0e4fb90d16ed9ede","roomName":"room50","bootAmount":50,"minAllowed":1000,"maxAllowed":10000,"maxPlayer":6,"chaalLimit":6,"potLimit":10000,"blindLimit":3,"__v":0,"tableInstance":3}]}
+*************
+
+route : connector.entryHandler.getChannelsOfRoom
+payload : {
+                                playerToken:"4JmWbCLQg",
+                                tableReference: "" // _id received from server request connector.entryHandler.getAllExistingTables !!
+          }
+callback 1 : {"status":true,"channels":[{"_id":"5654b6badab41fda11000d8e","roomTypeRef":"5650aaddff6d137426505530","tableName":"room200*Cartwheel","bootAmount":200,"minAllowed":4000,"maxAllowed":40000,"maxPlayer":6,"chaalLimit":6,"potLimit":40000,"blindLimit":3,"__v":0,"watchingPlayers":0,"playingPlayers":0,"isTableFull":false},{"_id":"5654b6badab41fda11000d8d","roomTypeRef":"5650aaddff6d137426505530","tableName":"room200*BlackEye","bootAmount":200,"minAllowed":4000,"maxAllowed":40000,"maxPlayer":6,"chaalLimit":6,"potLimit":40000,"blindLimit":3,"__v":0,"watchingPlayers":0,"playingPlayers":0,"isTableFull":false},{"_id":"5654b6badab41fda11000d8c","roomTypeRef":"5650aaddff6d137426505530","tableName":"room200*Andromeda","bootAmount":200,"minAllowed":4000,"maxAllowed":40000,"maxPlayer":6,"chaalLimit":6,"potLimit":40000,"blindLimit":3,"__v":0,"watchingPlayers":0,"playingPlayers":0,"isTableFull":false}]}
+callback 2 : cb({status:false,info:"Error occurred on server while fetching available Rooms !!"});
+
+*************
+route : connector.entryHandler.joinChannel
+payload : {
+    playerToken : "",
+    channelId : "",
+    playerName : ""
+}
+
+callback1 : {status:true,info:"Player joined into room !!"}
+callback2 : {status:false,info:"Channel is un available please contact admin !!"}
+
+Client app have to listen on event/route "newPlayerInForGame" to receive a message. Payload received by client will be
+{playerName:"",playerToken:"",tablePosition:[{}]} // table position is yet to be decided.
+
+Eg : pomelo.on("newPlayerInForGame",function(data){});
+
+*************
+route : connector.entryHandler.waitForChannel
+payload : {
+    playerToken : "",
+    channelId : "",
+    playerName : ""
+}
+
+callback1 : {status:true,info:"Channel subscribed !!"}
+callback2 : {status:false,info:"Could not subscribed to channel !!"}
+
+*************
+route : connector.entryHandler.watchGameOfThisChannel
+payload : {
+    playerToken : "",
+    channelId : "",
+    playerName : ""
+}
+
+callback1 : {status:true,info:"Player watching the channel !!"}
+callback2 : {status:false,info:"Channel is un-available please contact admin !!"}
+
+Client app have to listen on event/route "playerWatching" to receive a message. Payload received by client will be
+{playerName:"",playerToken:"",tablePosition:[{}], info:""} // table position is yet to be decided.
+
+Eg : pomelo.on("playerWatching",function(data){});
+
+*************
+route : connector.entryHandler.leaveChannel
+payload : {
+    playerToken : "",
+    channelId : "",
+    playerName : ""
+}
+
+callback1 : {status:true,info:"Player left channel !!"}
+callback2 : {status:false,info:"Channel is un available please contact admin !!"}
+
+Client app have to listen on event/route "playerLeftRoom" to receive a message. Payload received by client will be
+{playerName:"",playerToken:"",tablePosition:[{}], info:""} // table position is yet to be decided.
+
+Eg : pomelo.on("playerLeftRoom",function(data){});
+
+*************
+route : chat.chatHandler.send
+payload : {
+    isPrivate : True is chat is sent to specific user, False if chat is send to entire channel
+    from:"Name of Player",
+    forChannel: "Channel Id",
+    target : "ALL" if isPrvate is false, Name of individual if isPrivate is True
+    content : "Chat message"
+}
+callback1: {}
+Client app have to listen on event/route "onChant" to receive a message. Payload received by client will be
+{
+            msg: "Message to be displayed on chat screen",
+            from: "Name of player sending the chat message",
+            target: "ALL/Name of player !!",
+            forChannel:"ID of channel for which message is !!"
+}
+Eg : pomelo.on("onChat",function(data){});

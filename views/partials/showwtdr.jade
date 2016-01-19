@@ -1,0 +1,21 @@
+.showwtdr.partial.hide
+  h3 Pending Withdrawal Request
+  table(class="table table-bordered")
+   thead
+     tr
+       td Referece Id
+       td Request Date
+       td Agent Id
+       td Amount
+       td Accept
+       td Reject
+   tbody
+     tr(ng-repeat="withHistory in withHistories")
+       td {{withHistory.withdrawalId}}
+       td {{withHistory.withDate}}
+       td {{withHistory.withdrawalInit}}
+       td {{withHistory.withdrawalAmt}}
+       td
+         a(href="" ng-click="acceptWD(withHistory.withdrawalId)" class="btn btn-primary") Accept
+       td
+         a(href="" ng-click="rejectWD(withHistory.withdrawalId)" class="btn btn-primary") Reject

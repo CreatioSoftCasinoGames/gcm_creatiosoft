@@ -1,0 +1,16 @@
+.newregistrations.partial.hide
+  table(class="table table-bordered")
+   thead
+     tr()
+       td Player Id
+       td Player Name
+       td Player Mobile No
+       td Player Status
+       td Enable
+   tr(ng-repeat="newPlayer in newPlayers")
+     td {{newPlayer.playerRefForAdmin}}
+     td {{newPlayer.playerName}}
+     td {{newPlayer.playerMobile}}
+     td {{newPlayer.playerPassword}}
+     td
+       a(href="" ng-click="doEnable(newPlayer.playerToken)" class="btn btn-primary") Enable

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Slot client Robot Working</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          <h1 id="slot-client-robot-working">Slot client Robot Working</h1>
+
+          
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="ai-client.html">
+                    ai-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="check_all_keys_for_cutomLeaderBoard_separately.html">
+                    check_all_keys_for_cutomLeaderBoard_separately.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="game_start_after_game_over.html">
+                    game_start_after_game_over.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="pomelo-node-client.html">
+                    pomelo-node-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_and_jackpot_data_verification.html">
+                    profile_and_jackpot_data_verification.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management.html">
+                    profile_cache_management.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management_client_data.html">
+                    profile_cache_management_client_data.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_data_manipulaton.html">
+                    profile_data_manipulaton.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="run_test_suits.html">
+                    run_test_suits.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_calculation_time_to_all_player_count.html">
+                    send_calculation_time_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_gameStarted_to_all_player_count.html">
+                    send_gameStarted_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_game_over_to_all_player_count.html">
+                    send_game_over_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="validate_key_presence_in_all_broadcasts.html">
+                    validate_key_presence_in_all_broadcasts.js
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        <p>Declaration of required files and variables</p>
+<blockquote>
+<p>1- Require slotConstant and backendFetcher files here in order to access their methods,
+2- Create a redis client here in order to acces redis commands in this client
+3- Underscore is a javascript package </p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> slotConstants = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../game-server/config/slotConstants.json'</span>)[<span class="hljs-string">"development"</span>];
+<span class="hljs-keyword">var</span> backendFetcher = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../game-server/app/util/backendFetcher'</span>);
+<span class="hljs-keyword">var</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>).createClient(slotConstants.redisPort, slotConstants.redisHost, {});
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">'underscore'</span>);
+<span class="hljs-keyword">var</span> sockets = {}</pre></div>
+        
+      
+        
+        <p>Declaration of mock object of app</p>
+<blockquote>
+<p>Define all the inside methods that we are using in our gaming module</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> app = {
+  get: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> slotConstants
+  }
+}</pre></div>
+        
+      
+        
+        <p>Create a Robot pomelo client in order to access pomelo functionalities</p>
+<blockquote>
+<p>1- Create and define variables for this Robot client that will be accessed later
+2- Here we can also accept all the event emitter events such as broadcasts</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> Robot = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">tokens, sendSpin</span>)</span>{
+  <span class="hljs-keyword">this</span>.pomelo = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./specs/pomelo-node-client.js"</span>).pomelo;
+  <span class="hljs-keyword">this</span>.tokens = tokens;
+  <span class="hljs-keyword">this</span>.sendSpin = sendSpin;
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"jackpot"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+  })
+  <span class="hljs-keyword">this</span>.pomelo.on(<span class="hljs-string">"customLeaderBoard"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+  })
+};</pre></div>
+        
+      
+        
+        <p>Declaration of methoda that will be accessed by Robot client</p>
+<blockquote>
+<p>This block is used for first request to gate server in order to process login</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>Robot.prototype = {
+
+  run: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+    that.pomelo.init({
+      host: <span class="hljs-string">"127.0.0.1"</span>,
+      port: <span class="hljs-string">"3014"</span>,
+      log: <span class="hljs-literal">true</span>
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+
+      that.pomelo.request(<span class="hljs-string">"gate.gateHandler.getConnector"</span>, {is_guest: <span class="hljs-literal">true</span>, loginType: <span class="hljs-string">"login"</span>, device_id: that.deviseId, deviceType: <span class="hljs-string">"Android"</span>, gameVersion: <span class="hljs-string">"1.0.0"</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        <span class="hljs-keyword">if</span>(data.loginSuccess){
+          <span class="hljs-built_in">console</span>.log(data)
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Key mismatch !"</span>);
+        }
+      });
+    });
+  },</pre></div>
+        
+      
+        
+        <p>Connect a player with a server and then access the route APIs</p>
+<blockquote>
+<p>1- Intiate a pomelo client on a predefined host and port and bind this user with a server session
+2- Once a user is connected then we can access any route we have defined in our app
+3- Here we connect a player, join this user to a machine and then start spinning after a 4 second interval
+4- The next request is being only made if we got the response of previous requests (if any)</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>  connectPomelo: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> that = <span class="hljs-keyword">this</span>;
+    that.pomelo.init({
+      host: <span class="hljs-string">"127.0.0.1"</span>,
+      port: <span class="hljs-string">"3010"</span>,
+      log: <span class="hljs-literal">true</span>
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      that.sessionId = that.pomelo.socket.socket.sessionid;
+      sockets[that.sessionId] =  _.extend({}, that.pomelo);
+      that.pomelo.request(<span class="hljs-string">"connector.entryHandler.enter"</span>, {login_token: that.tokens.login_token, previous_login_token: that.tokens.previous_login_token}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+        that.pomelo.request(<span class="hljs-string">"connector.entryHandler.joinMachine"</span>, {machineId: <span class="hljs-number">1</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+          <span class="hljs-keyword">if</span>(that.sendSpin) {
+            setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+              sockets[that.sessionId].request(<span class="hljs-string">"slot.slotHandler.spinStatus"</span>, {coinsBet: <span class="hljs-number">1000</span>, coinsWin: <span class="hljs-number">3000</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{
+              });
+            }, <span class="hljs-number">4000</span>);
+          }
+        })
+      });
+    }); 
+  }  
+
+}</pre></div>
+        
+      
+        
+        <p>Create a new user and connect this user with pomelo</p>
+<blockquote>
+<p>1- userAccessToken is used as unique deviceId created at server side
+2- create a new user by posting a request on rails server through backendFetcher
+3- when rails sends user’s profile then save required details in redis as well that will be used for further processing</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>userAccessToken = <span class="hljs-built_in">Math</span>.random().toString(<span class="hljs-number">36</span>).slice(<span class="hljs-number">2</span>) + <span class="hljs-built_in">Math</span>.random().toString(<span class="hljs-number">16</span>).slice(<span class="hljs-number">2</span>);
+backendFetcher.post(<span class="hljs-string">"/api/v1/sessions.json"</span>, {is_guest: <span class="hljs-literal">true</span>, device_id: userAccessToken, device: <span class="hljs-string">"Android"</span>, game_version: <span class="hljs-string">"1.0"</span>}, app, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
+  redis.sadd(<span class="hljs-string">"game_players"</span>, <span class="hljs-string">"game_player:"</span> + user.login_token);
+  redis.hmset(<span class="hljs-string">"game_player:"</span>+user.login_token, <span class="hljs-string">"uid"</span>, user.id, <span class="hljs-string">"previous_login_token"</span>, user.previous_login_token, <span class="hljs-string">"player_id"</span>, user.id, <span class="hljs-string">"first_name"</span>, user.first_name, <span class="hljs-string">"player_name"</span>, (user.first_name + <span class="hljs-string">' '</span> + user.last_name), <span class="hljs-string">"player_level"</span>, user.current_level, <span class="hljs-string">"player_image"</span>, user.image_url, <span class="hljs-string">"online"</span>, <span class="hljs-number">1</span>);
+  <span class="hljs-keyword">var</span> robot = <span class="hljs-keyword">new</span> Robot(user, <span class="hljs-literal">true</span>);
+  robot.connectPomelo();
+});</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.listagent.partial.hide
+  table(class="table table-bordered")
+   thead
+     tr
+       td Agent Id
+       td Agent Name
+       td Commission
+   tbody
+     tr(ng-repeat="agent in agents")
+       td {{agent.adminRefId}}
+       td {{agent.name}}
+       td {{agent.commission}}

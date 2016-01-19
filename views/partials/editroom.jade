@@ -1,0 +1,42 @@
+.editroom.partial.hide
+  .col-md-6.col-md-offset-3
+    .well
+      form(class="form form-horizontal" id="fund-trf-form")
+        h3 Editing Room : {{tempRoomId}}
+        br
+        .form-group
+          label(class="control-label col-lg-3") Room Name :
+          .col-lg-8
+            input(class="form-control" ng-model="tempRoomName" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Pot Limit :
+          .col-lg-8
+            input(class="form-control" ng-model="tempPotLimit" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Boot Amount :
+          .col-lg-8
+            input(class="form-control" ng-model="tempBootAmt" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Max Player :
+          .col-lg-8
+            input(class="form-control" ng-model="tempMaxPlayer" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Min Amount :
+          .col-lg-8
+            input(class="form-control" ng-model="tempMinAmt" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Max Amount :
+          .col-lg-8
+            input(class="form-control" ng-model="tempMaxAmt" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Blind Limit :
+          .col-lg-8
+            input(class="form-control" ng-model="tempBlindLimit" type="text")
+        .form-group
+          label(class="control-label col-lg-3") Chaal Limit :
+          .col-lg-8
+            input(class="form-control" ng-model="tempChaalLimit" type="text")
+        .form-group
+          .col-lg-10.col-lg-offset-2
+            a(href="" ng-click="updateRoomConfig()" class="btn btn-primary") Update
+            a(href="" ng-click="getAllRooms()" class="btn btn-primary") Back

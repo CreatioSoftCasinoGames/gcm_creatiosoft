@@ -1,0 +1,31 @@
+.adminheader.header.hide
+  ul(class="nav navbar-nav" id="navbar")
+    li
+      a()
+        span#adminname
+        | &nbsp;||
+        span#admintoken
+        | &nbsp;||
+        span#adminaccbal
+    li
+        a(class="nav-link" ng-click="getAllRooms()") Manage Table
+    li
+        a(class="nav-link" ng-click="agent()") Create Agent
+    li
+        a(class="nav-link" ng-click="getAllAgents()") List Agent
+    li
+        a(class="nav-link" ng-click="fundTransferScr()") Fund Transfer
+    li
+        a(class="nav-link" ng-click="getPendingWithdraw()") Pending Withdrawal
+    li
+        a(class="nav-link" ng-click="getMyTransactions()") My Transaction
+    li
+        a(class="nav-link" ng-click="analytics()") Analytics
+        //  span(class="caret")
+        //ul(class="dropdown-menu")
+          li
+            a(href="#" ng-click="popUp()") Boot Collected
+          li
+            a(href="#" ng-click="popUp()") Tip Collected
+    li
+        a(class="nav-link" ng-click="Logout()") Logout

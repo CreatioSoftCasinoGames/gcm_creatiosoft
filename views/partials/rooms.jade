@@ -1,0 +1,15 @@
+.rooms.partial.hide
+  table(class="table")
+    tr(ng-repeat="room in rooms")
+      td {{room.id}}
+      td {{room.roomName}}
+      td {{room.bootAmount}}
+      td {{room.minAllowed}}
+      td {{room.maxAllowed}}
+      td {{room.maxPlayer}}
+      td {{room.chaalLimit}}
+      td {{room.potLimit}}
+      td
+        a(href="" ng-click="showTables(room.id)" class="btn btn-primary") Show tables
+      td
+        a(href="" ng-click="editTableConfig(table.id)" class="btn btn-primary") Edit

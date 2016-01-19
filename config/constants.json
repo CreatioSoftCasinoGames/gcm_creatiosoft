@@ -1,0 +1,12 @@
+{
+  "development": {
+    "gateHost": "192.168.45.22",
+    "gatePort": 3014,
+    "connectPort" : 3050
+  },
+  "production": {
+   	"gateHost": "52.76.181.61",
+    "gatePort": 3014,
+    "connectPort" : 3050
+  }
+}

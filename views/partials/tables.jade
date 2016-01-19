@@ -1,0 +1,7 @@
+.tables.partial.hide
+  table(class="table")
+    tr(ng-repeat="table in tables")
+      td {{table.id}}
+      td {{table.tableName}}
+      td
+        a(href="" ng-click="joinTable(table.id)" class="btn btn-primary") Join

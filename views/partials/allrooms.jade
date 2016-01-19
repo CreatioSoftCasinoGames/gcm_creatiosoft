@@ -1,0 +1,27 @@
+.allrooms.partial.hide
+  table(class="table table-bordered")
+    thead
+     tr
+       td Room Id
+       td Name
+       td Boot Amount
+       td Min Allowed
+       td Max Allowed
+       td Max Player
+       td Chaal Limit
+       td Blind Limit
+       td Pot Limit
+       td Action
+    tbody
+      tr(ng-repeat="room in rooms")
+        td {{room.id}}
+        td {{room.roomName}}
+        td {{room.bootAmount}}
+        td {{room.minAllowed}}
+        td {{room.maxAllowed}}
+        td {{room.maxPlayer}}
+        td {{room.chaalLimit}}
+        td {{room.blindLimit}}
+        td {{room.potLimit}}
+        td
+          a(href="" ng-click="editRoomConfig(room.id,room.roomName,room.bootAmount,room.minAllowed,room.maxAllowed,room.maxPlayer,room.chaalLimit,room.blindLimit,room.potLimit)" class="btn btn-primary") Edit

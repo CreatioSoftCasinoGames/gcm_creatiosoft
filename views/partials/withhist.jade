@@ -1,0 +1,14 @@
+.withhist.partial.hide
+  table(class="table table-bordered")
+    thead
+      tr
+        td Date
+        td Id
+        td Amount
+        td Status
+    tbody
+      tr(ng-repeat="withHistory in withHistories")
+        td {{withHistory.withDate}}
+        td {{withHistory.withdrawalId}}
+        td {{withHistory.withdrawalAmt}}
+        td {{withHistory.status}}

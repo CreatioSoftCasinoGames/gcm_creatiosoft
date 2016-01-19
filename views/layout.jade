@@ -1,0 +1,29 @@
+doctype html
+html(ng-app="teen-patti")
+  include ./head
+  body("data-gate-host"=gateHost "data-gate-port"=gatePort ng-controller="TeenPattiController")
+    .navbar.navbar-default.navbar-static-top
+      .container#custnavbar
+        button(class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse")
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        script.
+            $(document).ready(
+                    function () {
+                        function disableBack() {
+                            window.history.forward();
+                        }
+                        window.onload = disableBack();
+                        window.onpageshow = function (evt) {
+                            if (evt.persisted) disableBack()
+                        }
+                    });
+        a(class="navbar-brand") Teen-Patti
+        .navbar-collapse.collapse.navbar-responsive-collapse.pull-right#custnavbar
+        include header/agentheader
+        include header/adminheader
+    .container
+      .row
+        .col-md-12
+          block content

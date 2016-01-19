@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>pomelo-node-client.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>pomelo-node-client.js</h1>
+        
+
+        
+          <div class="toc">
+            <h3>Table of Contents</h3>
+            <ol>
+              
+                
+                <li>
+                  <a class="source" href="ai-client.html">
+                    ai-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="check_all_keys_for_cutomLeaderBoard_separately.html">
+                    check_all_keys_for_cutomLeaderBoard_separately.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="game_start_after_game_over.html">
+                    game_start_after_game_over.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="pomelo-node-client.html">
+                    pomelo-node-client.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_and_jackpot_data_verification.html">
+                    profile_and_jackpot_data_verification.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management.html">
+                    profile_cache_management.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_cache_management_client_data.html">
+                    profile_cache_management_client_data.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="profile_data_manipulaton.html">
+                    profile_data_manipulaton.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="run_test_suits.html">
+                    run_test_suits.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_calculation_time_to_all_player_count.html">
+                    send_calculation_time_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_gameStarted_to_all_player_count.html">
+                    send_gameStarted_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="send_game_over_to_all_player_count.html">
+                    send_game_over_to_all_player_count.js
+                  </a>
+                </li>
+              
+                
+                <li>
+                  <a class="source" href="validate_key_presence_in_all_broadcasts.html">
+                    validate_key_presence_in_all_broadcasts.js
+                  </a>
+                </li>
+              
+            </ol>
+          </div>
+        
+      </div>
+
+      
+        
+        
+        
+      
+        
+        <p><strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> ENCRYPTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong></p>
+
+        
+          <div class='highlight'><pre>
+<span class="hljs-keyword">var</span> Protocol = {};
+ 
+<span class="hljs-keyword">var</span> HEADER = <span class="hljs-number">5</span>;
+
+<span class="hljs-keyword">var</span> Message = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id,route,body</span>)</span>{
+    <span class="hljs-keyword">this</span>.id = id;
+    <span class="hljs-keyword">this</span>.route = route;
+    <span class="hljs-keyword">this</span>.body = body;
+};
+
+<span class="hljs-comment">/**
+ *
+ *pomele client encode
+ * id message id;
+ * route message route
+ * msg message body
+ * socketio current support string
+ *
+ */</span>
+Protocol.encode = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">id,route,msg</span>)</span>{
+  <span class="hljs-keyword">var</span> msgStr = <span class="hljs-built_in">JSON</span>.stringify(msg);
+  <span class="hljs-keyword">if</span> (route.length&gt;<span class="hljs-number">255</span>) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'route maxlength is overflow'</span>); }
+  <span class="hljs-keyword">var</span> byteArray = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint16Array</span>(HEADER + route.length + msgStr.length);
+  <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+  byteArray[index++] = (id&gt;&gt;<span class="hljs-number">24</span>) &amp; <span class="hljs-number">0xFF</span>;
+  byteArray[index++] = (id&gt;&gt;<span class="hljs-number">16</span>) &amp; <span class="hljs-number">0xFF</span>;
+  byteArray[index++] = (id&gt;&gt;<span class="hljs-number">8</span>) &amp; <span class="hljs-number">0xFF</span>;
+  byteArray[index++] = id &amp; <span class="hljs-number">0xFF</span>;
+  byteArray[index++] = route.length &amp; <span class="hljs-number">0xFF</span>;
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>;i&lt;route.length;i++){
+      byteArray[index++] = route.charCodeAt(i);
+  }
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; msgStr.length; i++) {
+      byteArray[index++] = msgStr.charCodeAt(i);
+  }
+  <span class="hljs-keyword">return</span> bt2Str(byteArray,<span class="hljs-number">0</span>,byteArray.length);
+};
+
+<span class="hljs-comment">/**
+ *
+ *client decode
+ *msg String data
+ *return Message Object
+ */</span>
+Protocol.decode = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>)</span>{
+  <span class="hljs-keyword">var</span> idx, len = msg.length, arr = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>( len );
+  <span class="hljs-keyword">for</span> ( idx = <span class="hljs-number">0</span> ; idx &lt; len ; ++idx ) {
+      arr[idx] = msg.charCodeAt(idx);
+  }
+  <span class="hljs-keyword">var</span> index = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">var</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint16Array</span>(arr);
+  <span class="hljs-keyword">var</span> id = ((buf[index++] &lt;&lt;<span class="hljs-number">24</span>) | (buf[index++])  &lt;&lt; <span class="hljs-number">16</span>  |  (buf[index++]) &lt;&lt; <span class="hljs-number">8</span> | buf[index++]) &gt;&gt;&gt;<span class="hljs-number">0</span>; 
+  <span class="hljs-keyword">var</span> routeLen = buf[HEADER-<span class="hljs-number">1</span>];
+  <span class="hljs-keyword">var</span> route = bt2Str(buf,HEADER, routeLen+HEADER);
+  <span class="hljs-keyword">var</span> body = bt2Str(buf,routeLen+HEADER,buf.length);  
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Message(id,route,body);
+};
+
+<span class="hljs-keyword">var</span> bt2Str = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">byteArray,start,end</span>) </span>{
+  <span class="hljs-keyword">var</span> result = <span class="hljs-string">""</span>;
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = start; i &lt; byteArray.length &amp;&amp; i&lt;end; i++) {
+      result = result + <span class="hljs-built_in">String</span>.fromCharCode(byteArray[i]);
+  };
+  <span class="hljs-keyword">return</span> result;
+}</pre></div>
+        
+      
+        
+        <p><strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> EVENT EMITTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> EVENT EMITTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> EVENT EMITTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> EVENT EMITTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> EVENT EMITTER <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> </p>
+
+        
+          <div class='highlight'><pre>
+
+
+
+<span class="hljs-keyword">var</span> isArray = <span class="hljs-built_in">Array</span>.isArray;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">EventEmitter</span>(<span class="hljs-params"></span>) </span>{
+}</pre></div>
+        
+      
+        
+        <p>By default EventEmitters will print a warning if more than
+10 listeners are added to it. This is a useful default which
+helps finding memory leaks.</p>
+<p>Obviously not all Emitters should be limited to 10. This function allows
+that to be increased. Set to zero for unlimited.</p>
+
+        
+          <div class='highlight'><pre><span class="hljs-keyword">var</span> defaultMaxListeners = <span class="hljs-number">10</span>;
+EventEmitter.prototype.setMaxListeners = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>) </span>{
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events) <span class="hljs-keyword">this</span>._events = {};
+  <span class="hljs-keyword">this</span>._maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> type = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>];</pre></div>
+        
+      
+        
+        <p>If there is no ‘error’ event listener then throw.</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span> (type === <span class="hljs-string">'error'</span>) {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events || !<span class="hljs-keyword">this</span>._events.error ||
+        (isArray(<span class="hljs-keyword">this</span>._events.error) &amp;&amp; !<span class="hljs-keyword">this</span>._events.error.length))
+      {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.domain) {
+          <span class="hljs-keyword">var</span> er = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>];
+          er.domain_emitter = <span class="hljs-keyword">this</span>;
+          er.domain = <span class="hljs-keyword">this</span>.domain;
+          er.domain_thrown = <span class="hljs-literal">false</span>;
+          <span class="hljs-keyword">this</span>.domain.emit(<span class="hljs-string">'error'</span>, er);
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Error</span>) {
+          <span class="hljs-keyword">throw</span> <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]; <span class="hljs-comment">// Unhandled 'error' event</span>
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"Uncaught, unspecified 'error' event."</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+      }
+  }
+
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">var</span> handler = <span class="hljs-keyword">this</span>._events[type];
+  <span class="hljs-keyword">if</span> (!handler) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> handler == <span class="hljs-string">'function'</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.domain) {
+      <span class="hljs-keyword">this</span>.domain.enter();
+    }
+    <span class="hljs-keyword">switch</span> (<span class="hljs-built_in">arguments</span>.length) {</pre></div>
+        
+      
+        
+        <p>fast cases</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+        handler.call(<span class="hljs-keyword">this</span>);
+      <span class="hljs-keyword">break</span>;
+      <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+        handler.call(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>]);
+      <span class="hljs-keyword">break</span>;
+      <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:
+        handler.call(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>], <span class="hljs-built_in">arguments</span>[<span class="hljs-number">2</span>]);
+      <span class="hljs-keyword">break</span>;</pre></div>
+        
+      
+        
+        <p>slower</p>
+
+        
+          <div class='highlight'><pre>      <span class="hljs-keyword">default</span>:
+        <span class="hljs-keyword">var</span> l = <span class="hljs-built_in">arguments</span>.length;
+      <span class="hljs-keyword">var</span> args = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(l - <span class="hljs-number">1</span>);
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">1</span>; i &lt; l; i++) args[i - <span class="hljs-number">1</span>] = <span class="hljs-built_in">arguments</span>[i];
+      handler.apply(<span class="hljs-keyword">this</span>, args);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.domain) {
+      <span class="hljs-keyword">this</span>.domain.exit();
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isArray(handler)) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.domain) {
+      <span class="hljs-keyword">this</span>.domain.enter();
+    }
+    <span class="hljs-keyword">var</span> l = <span class="hljs-built_in">arguments</span>.length;
+    <span class="hljs-keyword">var</span> args = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(l - <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">1</span>; i &lt; l; i++) args[i - <span class="hljs-number">1</span>] = <span class="hljs-built_in">arguments</span>[i];
+
+    <span class="hljs-keyword">var</span> listeners = handler.slice();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, l = listeners.length; i &lt; l; i++) {
+      listeners[i].apply(<span class="hljs-keyword">this</span>, args);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.domain) {
+      <span class="hljs-keyword">this</span>.domain.exit();
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+};
+
+EventEmitter.prototype.addListener = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type, listener</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-string">'function'</span> !== <span class="hljs-keyword">typeof</span> listener) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'addListener only takes instances of Function'</span>);
+  }
+
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events) <span class="hljs-keyword">this</span>._events = {};</pre></div>
+        
+      
+        
+        <p>To avoid recursion in the case that type == “newListeners”! Before
+adding it to the listeners, first emit “newListeners”.</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">this</span>.emit(<span class="hljs-string">'newListener'</span>, type, <span class="hljs-keyword">typeof</span> listener.listener === <span class="hljs-string">'function'</span> ?
+            listener.listener : listener);
+
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events[type]) {</pre></div>
+        
+      
+        
+        <p>Optimize the case of one listener. Don’t need the extra array object.</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">this</span>._events[type] = listener;
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isArray(<span class="hljs-keyword">this</span>._events[type])) {</pre></div>
+        
+      
+        
+        <p>If we’ve already got an array, just append.</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">this</span>._events[type].push(listener);
+
+  } <span class="hljs-keyword">else</span> {</pre></div>
+        
+      
+        
+        <p>Adding the second element, need to change to array.</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">this</span>._events[type] = [<span class="hljs-keyword">this</span>._events[type], listener];
+
+  }</pre></div>
+        
+      
+        
+        <p>Check for listener leak</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span> (isArray(<span class="hljs-keyword">this</span>._events[type]) &amp;&amp; !<span class="hljs-keyword">this</span>._events[type].warned) {
+    <span class="hljs-keyword">var</span> m;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._maxListeners !== <span class="hljs-literal">undefined</span>) {
+      m = <span class="hljs-keyword">this</span>._maxListeners;
+    } <span class="hljs-keyword">else</span> {
+      m = defaultMaxListeners;
+    }
+
+    <span class="hljs-keyword">if</span> (m &amp;&amp; m &gt; <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-keyword">this</span>._events[type].length &gt; m) {
+      <span class="hljs-keyword">this</span>._events[type].warned = <span class="hljs-literal">true</span>;
+      <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'(node) warning: possible EventEmitter memory '</span> +
+                    <span class="hljs-string">'leak detected. %d listeners added. '</span> +
+                    <span class="hljs-string">'Use emitter.setMaxListeners() to increase limit.'</span>,
+      <span class="hljs-keyword">this</span>._events[type].length);
+      <span class="hljs-built_in">console</span>.trace();
+    }
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+};
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+EventEmitter.prototype.once = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type, listener</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-string">'function'</span> !== <span class="hljs-keyword">typeof</span> listener) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'.once only takes instances of Function'</span>);
+  }
+
+  <span class="hljs-keyword">var</span> self = <span class="hljs-keyword">this</span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">g</span>(<span class="hljs-params"></span>) </span>{
+    self.removeListener(type, g);
+    listener.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+  };
+
+  g.listener = listener;
+  self.on(type, g);
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+};
+
+EventEmitter.prototype.removeListener = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type, listener</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-string">'function'</span> !== <span class="hljs-keyword">typeof</span> listener) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'removeListener only takes instances of Function'</span>);
+  }</pre></div>
+        
+      
+        
+        <p>does not use listeners(), so no side effect of creating _events[type]</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events || !<span class="hljs-keyword">this</span>._events[type]) <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+
+  <span class="hljs-keyword">var</span> list = <span class="hljs-keyword">this</span>._events[type];
+
+  <span class="hljs-keyword">if</span> (isArray(list)) {
+    <span class="hljs-keyword">var</span> position = -<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, length = list.length; i &lt; length; i++) {
+      <span class="hljs-keyword">if</span> (list[i] === listener ||
+          (list[i].listener &amp;&amp; list[i].listener === listener))
+        {
+          position = i;
+          <span class="hljs-keyword">break</span>;
+        }
+    }
+
+    <span class="hljs-keyword">if</span> (position &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    list.splice(position, <span class="hljs-number">1</span>);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (list === listener ||
+             (list.listener &amp;&amp; list.listener === listener))
+    {
+      <span class="hljs-keyword">delete</span> <span class="hljs-keyword">this</span>._events[type];
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+};
+
+EventEmitter.prototype.removeAllListeners = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">this</span>._events = {};
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  }
+
+  <span class="hljs-keyword">var</span> events = <span class="hljs-keyword">this</span>._events &amp;&amp; <span class="hljs-keyword">this</span>._events[type];
+  <span class="hljs-keyword">if</span> (!events) <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+
+  <span class="hljs-keyword">if</span> (isArray(events)) {
+    events.splice(<span class="hljs-number">0</span>);
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">this</span>._events[type] = <span class="hljs-literal">null</span>;
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+};
+
+EventEmitter.prototype.listeners = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type</span>) </span>{
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events) <span class="hljs-keyword">this</span>._events = {};
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._events[type]) <span class="hljs-keyword">this</span>._events[type] = [];
+  <span class="hljs-keyword">if</span> (!isArray(<span class="hljs-keyword">this</span>._events[type])) {
+    <span class="hljs-keyword">this</span>._events[type] = [<span class="hljs-keyword">this</span>._events[type]];
+  }
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._events[type];
+}</pre></div>
+        
+      
+        
+        <p><strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> POMELO CLIENT <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> POMELO CLIENT <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> POMELO CLIENT <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> POMELO CLIENT <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> 
+<strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> POMELO CLIENT <strong><strong><strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong></strong></strong> </p>
+
+        
+          <div class='highlight'><pre>
+
+<span class="hljs-keyword">var</span> pomelo = <span class="hljs-built_in">Object</span>.create(EventEmitter.prototype); <span class="hljs-comment">// object extend from object</span>
+<span class="hljs-keyword">var</span> socket = <span class="hljs-literal">null</span>;
+<span class="hljs-keyword">var</span> id = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">var</span> callbacks = {};
+
+pomelo.init = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">params, cb</span>)</span>{
+  <span class="hljs-keyword">var</span> io = <span class="hljs-built_in">require</span>(<span class="hljs-string">'socket.io-client'</span>)
+  pomelo.params = params;
+  params.debug = <span class="hljs-literal">true</span>;
+  <span class="hljs-keyword">var</span> host = params.host;
+  <span class="hljs-keyword">var</span> port = params.port;
+
+  <span class="hljs-keyword">var</span> url = <span class="hljs-string">'wss://'</span> + host;
+  <span class="hljs-keyword">if</span>(port) {
+    url +=  <span class="hljs-string">':'</span> + port;
+  }
+  
+  socket = io.connect(url, {<span class="hljs-string">'force new connection'</span>: <span class="hljs-literal">true</span>, reconnect: <span class="hljs-literal">false</span>, forceNew: <span class="hljs-literal">true</span>});
+
+  socket.on(<span class="hljs-string">'connect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'[pomeloclient.init] websocket connected!'</span>);
+    pomelo.socket = socket;
+    <span class="hljs-keyword">if</span> (cb) {
+      cb(socket);
+    }
+  });
+
+  socket.on(<span class="hljs-string">'reconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'reconnect'</span>);
+  });
+
+  socket.on(<span class="hljs-string">'message'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> data === <span class="hljs-string">'string'</span>) {
+      data = <span class="hljs-built_in">JSON</span>.parse(data);
+    }
+    <span class="hljs-keyword">if</span>(data <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
+      processMessageBatch(pomelo, data);
+    } <span class="hljs-keyword">else</span> {
+      processMessage(pomelo, data);
+    }
+  });
+
+  socket.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(err);
+  });
+
+  socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">reason</span>) </span>{
+    pomelo.emit(<span class="hljs-string">'disconnect'</span>, reason);
+  });
+};
+
+pomelo.disconnect = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">if</span>(socket) {
+    socket.disconnect();
+    socket = <span class="hljs-literal">null</span>;
+  }
+};
+
+pomelo.request = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">route</span>) </span>{
+  <span class="hljs-keyword">if</span>(!route) {
+    <span class="hljs-keyword">return</span>;
+  }
+  <span class="hljs-keyword">var</span> msg = {};
+  <span class="hljs-keyword">var</span> cb;
+  <span class="hljs-built_in">arguments</span> = <span class="hljs-built_in">Array</span>.prototype.slice.apply(<span class="hljs-built_in">arguments</span>);
+  <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">2</span>){
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>] === <span class="hljs-string">'function'</span>){
+      cb = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>];
+    }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>] === <span class="hljs-string">'object'</span>){
+      msg = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>];
+    }
+  }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">3</span>){
+    msg = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">1</span>];
+    cb = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">2</span>];
+  }
+  msg = filter(msg,route);
+  id++; 
+  callbacks[id] = cb;
+  <span class="hljs-keyword">var</span> sg = Protocol.encode(id, route, msg);
+  socket.send(sg);
+};
+
+pomelo.notify = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">route,msg</span>) </span>{
+  <span class="hljs-keyword">this</span>.request(route, msg);
+};
+
+<span class="hljs-keyword">var</span> processMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pomelo, msg</span>) </span>{
+  <span class="hljs-keyword">var</span> route;
+  <span class="hljs-keyword">if</span>(msg.id) {</pre></div>
+        
+      
+        
+        <p>if have a id then find the callback function with the request</p>
+
+        
+          <div class='highlight'><pre>    <span class="hljs-keyword">var</span> cb = callbacks[msg.id];
+    
+    <span class="hljs-keyword">delete</span> callbacks[msg.id];
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> cb !== <span class="hljs-string">'function'</span>) {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'[pomeloclient.processMessage] cb is not a function for request '</span> + msg.id);
+      <span class="hljs-keyword">return</span>;
+    }
+
+    cb(msg.body);
+    <span class="hljs-keyword">return</span>;
+  }</pre></div>
+        
+      
+        
+        <p>server push message or old format message</p>
+
+        
+          <div class='highlight'><pre>  processCall(msg);</pre></div>
+        
+      
+        
+        <p>if no id then it should be a server push message</p>
+
+        
+          <div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">processCall</span>(<span class="hljs-params">msg</span>) </span>{
+    <span class="hljs-keyword">var</span> route = msg.route;
+    <span class="hljs-keyword">if</span>(!!route) {
+      <span class="hljs-keyword">if</span> (!!msg.body) {
+        <span class="hljs-keyword">var</span> body = msg.body.body;
+        <span class="hljs-keyword">if</span> (!body) {body = msg.body;}
+        pomelo.emit(route, body);
+      } <span class="hljs-keyword">else</span> {
+        pomelo.emit(route,msg);
+      }
+    } <span class="hljs-keyword">else</span> {
+        pomelo.emit(msg.body.route,msg.body);
+    }
+  }
+};
+
+<span class="hljs-keyword">var</span> processMessageBatch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">pomelo, msgs</span>) </span>{
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>, l=msgs.length; i&lt;l; i++) {
+    processMessage(pomelo, msgs[i]);
+  }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">filter</span>(<span class="hljs-params">msg,route</span>)</span>{
+  <span class="hljs-keyword">if</span>(route.indexOf(<span class="hljs-string">'area.'</span>) === <span class="hljs-number">0</span>){
+    msg.areaId = pomelo.areaId;
+  }
+
+  msg.timestamp = <span class="hljs-built_in">Date</span>.now();
+  <span class="hljs-keyword">return</span> msg;
+}
+
+exports.pomelo = pomelo;</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

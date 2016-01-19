@@ -1,0 +1,31 @@
+// Analy Req: 3
+// Top 20 player which  giving maximum drop with agent name.
+
+.analytics.hide.partial
+  nav(class="container-fluid")
+    .container-fluid
+      .navbar-header
+        .collapse.navbar-collapse
+         br
+         h3 Top 20 player
+         br
+         
+         .form-group
+          .col-lg-12
+           .col-lg-5
+           .col-lg-7
+            button(ng-click="getTop20PlayerDropWithAgent()" class="btn btn-primary") Submit
+         br
+         br
+         label(class="control-label") {{message}}
+         table(class="table table-bordered")
+          thead
+           tr
+            td Player
+            td Agent
+            td Drop Amount
+           tbody
+            tr(ng-repeat="drop in drops")
+             td {{drop.transInit}}
+             td {{drop.transRcvr}}
+             td {{drop.money}}
