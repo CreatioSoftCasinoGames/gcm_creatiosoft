@@ -1,7 +1,7 @@
 // Analy Req: 4
 // Top 10 player of that agent which giving max drop.
 
-.analytics.hide.partial
+.top10Agent.hide.partial
   nav(class="container-fluid")
     .container-fluid
       .navbar-header
@@ -34,7 +34,7 @@
             td Player
             td Drop Amount
            tbody
-            tr(ng-repeat="drop in drops")
+            tr(ng-repeat="drop in top10Playerdrops")
              td {{drop.transRcvr}}
              td {{drop.transInit}}
              td {{drop.money}}

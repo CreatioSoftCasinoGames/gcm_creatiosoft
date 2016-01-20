@@ -1,7 +1,7 @@
 // Analy Req: 1
 // Get Drop made by particular Top management(Admin), Top State, Top District, Agents
 
-.analytics.hide.partial
+.adminDrop.hide.partial
   nav(class="container-fluid")
     .container-fluid
       .navbar-header
@@ -52,6 +52,6 @@
             td Id
             td Drop Amount
            tbody
-            tr(ng-repeat="drop in drops")
+            tr(ng-repeat="drop in adminDrops")
              td {{drop.fundReceiver}}
              td {{drop.money}}

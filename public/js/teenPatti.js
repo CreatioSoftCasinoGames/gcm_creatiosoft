@@ -117,7 +117,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                                 console.log(!data.result.length)
                                 if(!data.result.length){
                                   console.log("No Data Found");
-                                  $scope.drops = data.result;
+                                  $scope.adminDrops = data.result;
                                   alert("No data found");                                  
                                 }
                                 else
@@ -172,11 +172,11 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                             if (data.status) {
                                 if(!data.result.length){
                                   console.log("No Data Found");
-                                  $scope.drops = data.result;
+                                  $scope.adminDropsByAgent = data.result;
                                   alert("No data found");                                  
                                 }
                                 else
-                                    $scope.drops = data.result;
+                                    $scope.adminDropsByAgent = data.result;
                             } else {
                                 console.log("Unable to get data");
                                 alert("Unable to get data");
@@ -202,7 +202,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                       alert("No data found");                                  
                     }
                     else
-                        $scope.drops = data.result;
+                        $scope.top20PlayerDrop = data.result;
                 } else {
                     console.log("Unable to get data");
                     alert("Unable to get data");
@@ -225,7 +225,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                         }
                         else{
                             console.log(data.result);
-                            $scope.drops = data.result;
+                            $scope.top10Playerdrops = data.result;
                         }
                     } else {
                         console.log("Unable to get data");
@@ -1141,8 +1141,25 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         }
     };
 
-    $scope.analytics = function(){
-        myTeenPatti.showPartial(".analytics");
+    $scope.adminDrop = function(){
+        myTeenPatti.showPartial(".adminDrop");
+    };
+
+    $scope.agentDrop = function(){
+        myTeenPatti.showPartial(".agentDrop");
+    };
+
+    $scope.tip = function(){
+        myTeenPatti.showPartial(".tip");
+    };
+
+    $scope.top10Agent = function(){
+        myTeenPatti.showPartial(".top10Agent");
+    };
+
+    $scope.top20Drop = function(){
+        myTeenPatti.showPartial(".top20Drop");
+        $scope.getTop20PlayerDropWithAgent();
     };
 
     $scope.convertMS = function(ms) {

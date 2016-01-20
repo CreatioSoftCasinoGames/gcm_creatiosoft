@@ -3,7 +3,7 @@
 // Analy Req: 2
 // Get Drop made by admin from particular agent
 
-.analytics.hide.partial
+.agentDrop.hide.partial
   nav(class="container-fluid")
     .container-fluid
       .navbar-header
@@ -64,7 +64,7 @@
             td Fund Initiator
             td Drop Amount
            tbody
-            tr(ng-repeat="drop in drops")
+            tr(ng-repeat="drop in adminDropsByAgent")
              td {{drop.fundReceiver}}
              td {{drop.fundInitiator}}
              td {{drop.money}}
