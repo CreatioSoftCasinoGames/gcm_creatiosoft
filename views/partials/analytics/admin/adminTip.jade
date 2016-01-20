@@ -9,28 +9,12 @@
       .navbar-header
         .collapse.navbar-collapse
          br
-         br
-
-         .form-group
-          .col-lg-12
-           .col-lg-5
-            label(class="control-label") Admin Id
-           .col-lg-7
-            input(class="form-control" ng-model="adminId" type="text")
-
-         br
-         br
-         
-         .form-group
-          .col-lg-12
-           .col-lg-5
-           .col-lg-7
-            button(ng-click="getGetTipAmountByAdmin()" class="btn btn-primary") Click
-         br
+         h3 Tip Earned By Admin
+         br         
          br
          .form-group
           .col-lg-12
-           .col-lg-7
-            label(class="control-label") Total Tip Earned:
-           .col-lg-5
+           .col-lg-10
+            label(class="control-label") Amount:
+           .col-lg-2
             {{tipEarned}}

@@ -7,35 +7,9 @@ var fundTransfers = mongoose.model("fundTransfers");
 var playerCollection = mongoose.model("playerInfo");
 var playerTransactionLogs = mongoose.model("playerAccountTransactionLogs");
 var playerAccount = mongoose.model("playerAccount");
-
+var jwtKey = require("../config/keys");
 
 var analytics = {};
-
-// analytics.getDropBetweenRangeOfAdmin = function(req,res){
-//     console.log("Request for getDropBetweenRange : " + JSON.stringify(req.body));
-//     fundTransfers.aggregate([
-//         {
-//             $match : {
-//                 fundReceiver: req.body.by,
-//                 fundType    : {$in : ["RAKE","TIP"]},
-//                 createdOn   : {$gt:req.body.between.startDate , $lt:req.body.between.endDate}
-//                 }
-//         },
-//         {
-//             $group : {
-//                 _id:"$fundReceiver",
-//                 money : {$sum:"$fundAmount"}
-//             }
-//         }
-//     ],function(err,results){
-//         if(!err){
-//             res.json({status:true,result:results});
-//         } else {
-//             console.log("Error in finding drop !!" + err);
-//             res.json({status:false,info:"Error in finding drop !!"});
-//         }
-//     });
-// };
 
 // Analy Req: 1 & 6
 // Get Drop made by particular Top management(Admin), Top State, Top District, Agents

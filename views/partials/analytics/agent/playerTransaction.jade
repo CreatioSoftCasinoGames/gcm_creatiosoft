@@ -1,7 +1,7 @@
 // Analy Req: 8
 // Agent can see all the transaction via putting player id in dashboard.
 
-.analytics.hide.partial
+.agentTransaction.hide.partial
   nav(class="container-fluid")
     .container-fluid
       .navbar-header
@@ -26,7 +26,7 @@
             button(ng-click="getAllTransactionForAgent()" class="btn btn-primary") Click
          br
          br
-         label(class="control-label") {{message}}
+         label(class="control-label") {{messagePlayer}}
          table(class="table table-bordered")
           thead
            tr

@@ -11,22 +11,13 @@
          br
          h3 Admin Drop From Agent
          br
-
-         .form-group
-          .col-lg-12
-           .col-lg-5
-            label(class="control-label") Admin Id
-           .col-lg-7
-            input(class="form-control" ng-model="data.adminId" type="text")
-
-         br
          br
          .form-group
           .col-lg-12
            .col-lg-5
             label(class="control-label") Agent Id
            .col-lg-7
-            input(class="form-control" ng-model="data.agentId" type="text")
+            input(class="form-control" ng-model="adminDropAgentData.agentId" type="text")
 
          br
          br
@@ -35,7 +26,7 @@
            .col-lg-5
             label(class="control-label") Start Date
            .col-lg-7
-            input(class="form-control" ng-model="data.startDate" type="text" placeholder="MM/DD/YYYY")
+            input(class="form-control" ng-model="adminDropAgentData.startDate" type="text" placeholder="MM/DD/YYYY")
          br
          br
          .form-group
@@ -43,7 +34,7 @@
            .col-lg-5
             label(class="control-label") Select Range
            .col-lg-7
-            select(ng-model="data.criteria" class="col-lg-12 btn btn-default dropdown-toggle") 
+            select(ng-model="adminDropAgentData.criteria" class="col-lg-12 btn btn-default dropdown-toggle") 
              option(value='daily') Daily 
              option(value='weekly') Weekly
              option(value='monthly') Monthly

@@ -1,7 +1,7 @@
 // Analy Req: 7
 // Top 10 player of that agent which giving maximum revenue
 
-.analytics.hide.partial
+.agentTopPlayer.hide.partial
   nav(class="container-fluid")
     .container-fluid
       .navbar-header
@@ -9,24 +9,6 @@
          br
          br
 
-         .form-group
-          .col-lg-12
-           .col-lg-5
-            label(class="control-label") Agent Id
-           .col-lg-7
-            input(class="form-control" ng-model="agentId" type="text")
-
-         br
-         br
-         
-         .form-group
-          .col-lg-12
-           .col-lg-5
-           .col-lg-7
-            button(ng-click="getTop10PlayerDropForParticularAgent()" class="btn btn-primary") Click
-         br
-         br
-         label(class="control-label") {{message}}
          table(class="table table-bordered")
           thead
            tr
@@ -34,7 +16,7 @@
             td Player
             td Drop Amount
            tbody
-            tr(ng-repeat="drop in drops")
+            tr(ng-repeat="drop in top10PlayerAgentDrops")
              td {{drop.transRcvr}}
              td {{drop.transInit}}
              td {{drop.money}}

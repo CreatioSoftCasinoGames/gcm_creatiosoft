@@ -61,6 +61,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                 $scope.usrRole = data.roleId;
                 $scope.usrRefId = data.userId;
                 if($scope.usrRole != 103){
+                    console.log("---------When Not 103-------------");
                     $("#adminname").text(data.name);
                     $("#admintoken").text(data.role);
                     myTeenPatti.showHeadPartial(".adminheader");
@@ -68,6 +69,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                     $scope.getAdminAccDetail();
                     myTeenPatti.showPartial(".allrooms");
                 } else {
+                    console.log("---------When 103-------------");
                     $("#name").text(data.name);
                     $("#token").text(data.role);
                     myTeenPatti.showHeadPartial(".agentheader");
@@ -79,28 +81,33 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
             }
         });
     };
+    
+    /* ------------------------------------Analytics Starts Here -------------------------------*/
 
     $scope.dropBetweenRangeOfAdmin = function () {
-        if($scope.data){
-            if(!$scope.data.adminId || !$scope.data.startDate || !$scope.data.criteria)
+        $scope.adminDropData.adminId = $scope.usrRefId;
+        $scope.adminDropData.authToken = $scope.authToken;
+
+        if($scope.adminDropData){
+            if(!$scope.adminDropData.adminId || !$scope.adminDropData.startDate || !$scope.adminDropData.criteria)
                 alert("Insufficient data");
             else{
-                if(isValidDate($scope.data.startDate)){
+                if(isValidDate($scope.adminDropData.startDate)){
                     //$scope.data.startDate = (new Date($scope.data.startDate)).getTime();
 
-                    var startDate= (new Date($scope.data.startDate)).getTime();
-                    var endDate = new Date($scope.data.startDate);
+                    var startDate= (new Date($scope.adminDropData.startDate)).getTime();
+                    var endDate = new Date($scope.adminDropData.startDate);
                     endDate.setDate(endDate.getDate() + 1);
                     endDate = endDate.getTime();
 
 
-                    if($scope.data.criteria == "weekly"){
-                        var firstDay = new Date($scope.data.startDate);
+                    if($scope.adminDropData.criteria == "weekly"){
+                        var firstDay = new Date($scope.adminDropData.startDate);
                         endDate = (new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000)).getTime();
                     }
 
-                    if($scope.data.criteria == "monthly"){
-                        var now = new Date($scope.data.startDate);
+                    if($scope.adminDropData.criteria == "monthly"){
+                        var now = new Date($scope.adminDropData.startDate);
                         if (now.getMonth() == 11) {
                             endDate = (new Date(now.getFullYear() + 1, 0, 1)).getTime();
                         } else {
@@ -108,20 +115,19 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                         }
                     }
 
-                   $scope.message = "From "+$scope.data.startDate+" to "+ formatDate(endDate);
+                   $scope.message = "From "+$scope.adminDropData.startDate+" to "+ formatDate(endDate);
 
                    $.post("dropBetweenRangeOfAdmin",
-                        {"adminId": $scope.data.adminId, "startDate": startDate, "endDate": endDate},
+                        {"adminId": $scope.adminDropData.adminId, "startDate": startDate, "endDate": endDate, "authToken": $scope.adminDropData.authToken},
                         function (data, status) {
                             if (data.status) {
-                                console.log(!data.result.length)
                                 if(!data.result.length){
                                   console.log("No Data Found");
                                   $scope.adminDrops = data.result;
                                   alert("No data found");                                  
                                 }
                                 else
-                                    $scope.drops = data.result;
+                                    $scope.adminDrops = data.result;
                             } else {
                                 console.log("Unable to get data");
                                 alert("Unable to get data");
@@ -137,26 +143,28 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
     };
 
     $scope.dropBetweenRangeOfAdminFromAgent = function () {
-        if($scope.data){
-            if(!$scope.data.adminId || !$scope.data.startDate || !$scope.data.criteria || !$scope.data.agentId)
+        $scope.adminDropAgentData.adminId = $scope.usrRefId;
+        $scope.adminDropAgentData.authToken = $scope.authToken;
+
+        if($scope.adminDropAgentData){
+            if(!$scope.adminDropAgentData.adminId || !$scope.adminDropAgentData.startDate || !$scope.adminDropAgentData.criteria || !$scope.adminDropAgentData.agentId)
                 alert("Insufficient data");
             else{
-                if(isValidDate($scope.data.startDate)){
-                    //$scope.data.startDate = (new Date($scope.data.startDate)).getTime();
+                if(isValidDate($scope.adminDropAgentData.startDate)){
 
-                    var startDate= (new Date($scope.data.startDate)).getTime();
-                    var endDate = new Date($scope.data.startDate);
+                    var startDate= (new Date($scope.adminDropAgentData.startDate)).getTime();
+                    var endDate = new Date($scope.adminDropAgentData.startDate);
                     endDate.setDate(endDate.getDate() + 1);
                     endDate = endDate.getTime();
 
 
-                    if($scope.data.criteria == "weekly"){
-                        var firstDay = new Date($scope.data.startDate);
+                    if($scope.adminDropAgentData.criteria == "weekly"){
+                        var firstDay = new Date($scope.adminDropAgentData.startDate);
                         endDate = (new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000)).getTime();
                     }
 
-                    if($scope.data.criteria == "monthly"){
-                        var now = new Date($scope.data.startDate);
+                    if($scope.adminDropAgentData.criteria == "monthly"){
+                        var now = new Date($scope.adminDropAgentData.startDate);
                         if (now.getMonth() == 11) {
                             endDate = (new Date(now.getFullYear() + 1, 0, 1)).getTime();
                         } else {
@@ -164,10 +172,10 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                         }
                     }
 
-                   $scope.message = "From "+$scope.data.startDate+" to "+ formatDate(endDate);
+                   $scope.message = "From "+$scope.adminDropAgentData.startDate+" to "+ formatDate(endDate);
 
                    $.post("dropBetweenRangeOfAdminFromAgent",
-                        {"adminId": $scope.data.adminId, "agentId": $scope.data.agentId, "startDate": startDate, "endDate": endDate},
+                        {"adminId": $scope.adminDropAgentData.adminId, "agentId": $scope.adminDropAgentData.agentId, "startDate": startDate, "endDate": endDate, "authToken": $scope.adminDropAgentData.authToken},
                         function (data, status) {
                             if (data.status) {
                                 if(!data.result.length){
@@ -192,7 +200,8 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
     };
 
     $scope.getTop20PlayerDropWithAgent = function(){
-        $.get("getTop20PlayerDropWithAgent",
+        $.post("getTop20PlayerDropWithAgent",
+            {"authToken": $scope.authToken},
             function (data, status) {
                 if (data.status) {
                     console.log(data.result);
@@ -207,15 +216,14 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                     console.log("Unable to get data");
                     alert("Unable to get data");
                 }
-
         });
     }
 
     $scope.getTop10PlayerDropForParticularAgent = function(){
-        if(!$scope.agentId) alert("Please provide Agent Id");
+        if(!$scope.top10PlayerData.agentId) alert("Please provide Agent Id");
         else{
             $.post("getTop10PlayerDropForParticularAgent",
-            {agentId: $scope.agentId},
+            { agentId: $scope.top10PlayerData.agentId, "authToken": $scope.authToken },
             function (data, status) {
                     if (data.status) {
                         if(!data.result.length){
@@ -235,16 +243,38 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         }
     }
 
+    $scope.getTop10PlayerDropForAgent = function(){
+        if(!$scope.usrRefId) alert("Please provide Agent Id");
+        else{
+            $.post("getTop10PlayerDropForParticularAgent",
+            { agentId: $scope.usrRefId, "authToken": $scope.authToken },
+            function (data, status) {
+                    if (data.status) {
+                        if(!data.result.length){
+                          console.log("No Data Found");
+                          $scope.drops = data.result;
+                          alert("No data found");                                  
+                        }
+                        else{
+                            console.log(data.result);
+                            $scope.top10PlayerAgentDrops = data.result;
+                        }
+                    } else {
+                        console.log("Unable to get data");
+                        alert("Unable to get data");
+                    }
+            });
+        }
+    }
+
     $scope.getGetTipAmountByAdmin = function(){
-        if(!$scope.adminId) alert("Please provide Admin Id");
+        if(!$scope.usrRefId) alert("Please provide Admin Id");
         else{
             $.post("getGetTipAmountByAdmin",
-            {adminId: $scope.adminId},
+            {adminId: $scope.usrRefId, authToken: $scope.authToken},
             function (data, status) {
                     if (data.status) {
                             $scope.tipEarned = data.result[0].tipEarned;
-                               
-                       
                     } else {
                         console.log("Unable to get data");
                         alert("Unable to get data");
@@ -258,7 +288,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         if(!$scope.playerId) alert("Please provide player Id");
         else{
             $.post("getAllTransactionForAgent",
-            {playerId: $scope.playerId},
+            {playerId: $scope.playerId, authToken: $scope.authToken},
             function (data, status) {
                     if (data.status) {
                             $scope.agentTransaction = data.result;
@@ -273,6 +303,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         }
     }
 
+/* ------------------------------------Analytics Ends Here -------------------------------*/
 
     $scope.constMenu = function(options){
         console.log("constMenu called");
@@ -538,7 +569,10 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
                         });
                     } else {
                         alert(data.info);
-                        //myTeenPatti.showPartial(".newregistrations");
+                        myTeenPatti.showPartial(".newregistrations");
+                        $scope.$apply(function () {
+                            $scope.newPlayers = null;
+                        });
                     }
 
                 });
@@ -1141,6 +1175,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         }
     };
 
+/* ------------------------------------Analytics Starts Here -------------------------------*/
     $scope.adminDrop = function(){
         myTeenPatti.showPartial(".adminDrop");
     };
@@ -1151,6 +1186,7 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
 
     $scope.tip = function(){
         myTeenPatti.showPartial(".tip");
+        $scope.getGetTipAmountByAdmin();
     };
 
     $scope.top10Agent = function(){
@@ -1161,6 +1197,21 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         myTeenPatti.showPartial(".top20Drop");
         $scope.getTop20PlayerDropWithAgent();
     };
+
+    $scope.agentDropAgent = function(){
+        myTeenPatti.showPartial(".agentDropAgent");
+    };
+
+    $scope.agentTransaction = function(){
+        myTeenPatti.showPartial(".agentTransaction");
+    };
+
+    $scope.agentTopPlayer = function(){
+        myTeenPatti.showPartial(".agentTopPlayer");
+        $scope.getTop10PlayerDropForAgent();
+    };
+
+/* ------------------------------------Analytics Ends Here -------------------------------*/
 
     $scope.convertMS = function(ms) {
          var d, h, m, s;

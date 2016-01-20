@@ -31,7 +31,7 @@ router.post("/dropBetweenRangeOfAdminFromAgent", function(req,res){
     analytics.getDropBetweenRangeOfAdminFromAgent(req, res);
 });
 
-router.get("/getTop20PlayerDropWithAgent", function(req,res){
+router.post("/getTop20PlayerDropWithAgent", function(req,res){
     analytics.getTop20PlayerDropWithAgent(req, res);
 });
 
