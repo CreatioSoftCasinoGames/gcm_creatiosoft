@@ -37,8 +37,9 @@ var analytics = {};
 //     });
 // };
 
-//Analy Req: 1
+// Analy Req: 1 & 6
 // Get Drop made by particular Top management(Admin), Top State, Top District, Agents
+// How much money agent made on daily,weekly,monthly basis.
 analytics.getDropBetweenRangeOfAdmin = function(req,res){
     console.log("Request for getDropBetweenRange : " + JSON.stringify(req.body));
     fundTransfers.aggregate([
@@ -144,8 +145,9 @@ analytics.getTop20PlayerDropWithAgent = function(req,res){
     });
 };
 
-// Analy Req: 4
+// Analy Req: 4 & 7
 // Top 10 player of that agent which giving max drop.
+// Top 10 player of that agent which giving maximum revenue.
 
 analytics.getTop10PlayerDropForParticularAgent = function(req,res){
     console.log("Request for getTop10PlayerDropWithAgent : " + JSON.stringify(req.body));
@@ -208,6 +210,25 @@ analytics.getGetTipAmountByAdmin = function(req,res){
                 fundReceiver: "$_id",
                 tipEarned: "$tipEarned"
              }
+        }
+    ],function(err,results){
+        if(!err){
+            res.json({status:true,result:results});
+        } else {
+            console.log("Error in finding drop !!" + err);
+            res.json({status:false,info:"Error in finding drop !!"});
+        }
+    });
+};
+
+// Analy Req: 8
+// Agent can see all the transaction via putting player id in dashboard.
+
+analytics.getAllTransactionForAgent = function(req,res){
+    console.log("Request for getAllTransactionForAgent : " + JSON.stringify(req.body));
+    playerTransactionLogs.aggregate([
+        {
+            $match: { $or: [{ transInit: req.body.playerId }, { transRcvr: req.body.playerId }] }
         }
     ],function(err,results){
         if(!err){

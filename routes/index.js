@@ -43,6 +43,10 @@ router.post("/getGetTipAmountByAdmin", function(req,res){
     analytics.getGetTipAmountByAdmin(req, res);
 });
 
+router.post("/getAllTransactionForAgent", function(req,res){
+    analytics.getAllTransactionForAgent(req, res);
+});
+
 router.post("/signin",function(req,res){
     thirdPartyService.verifyLogin(req,res);
 });

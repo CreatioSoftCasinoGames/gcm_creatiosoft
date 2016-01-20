@@ -1,0 +1,48 @@
+// Analy Req: 8
+// Agent can see all the transaction via putting player id in dashboard.
+
+.analytics.hide.partial
+  nav(class="container-fluid")
+    .container-fluid
+      .navbar-header
+        .collapse.navbar-collapse
+         br
+         br
+
+         .form-group
+          .col-lg-12
+           .col-lg-5
+            label(class="control-label") Player Id
+           .col-lg-7
+            input(class="form-control" ng-model="playerId" type="text")
+
+         br
+         br
+         
+         .form-group
+          .col-lg-12
+           .col-lg-5
+           .col-lg-7
+            button(ng-click="getAllTransactionForAgent()" class="btn btn-primary") Click
+         br
+         br
+         label(class="control-label") {{message}}
+         table(class="table table-bordered")
+          thead
+           tr
+            td Id
+            td Initiator
+            td Receiver
+            td Transaction Type
+            td Transfer Type
+            td Status
+            td Amount
+           tbody
+            tr(ng-repeat="agent in agentTransaction")
+             td {{agent.transId}}
+             td {{agent.transInit}}
+             td {{agent.transRcvr}}
+             td {{agent.transType}}
+             td {{agent.transTrfType}}
+             td {{agent.transStatus}}
+             td {{agent.transAmount}}

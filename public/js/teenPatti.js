@@ -254,6 +254,25 @@ angular.module('teen-patti', []).controller('TeenPattiController', ['$scope', '$
         }
     }
 
+    $scope.getAllTransactionForAgent = function(){
+        if(!$scope.playerId) alert("Please provide player Id");
+        else{
+            $.post("getAllTransactionForAgent",
+            {playerId: $scope.playerId},
+            function (data, status) {
+                    if (data.status) {
+                            $scope.agentTransaction = data.result;
+                            console.log($scope.agentTransaction);                               
+                       
+                    } else {
+                        console.log("Unable to get data");
+                        alert("Unable to get data");
+                    }
+            });
+
+        }
+    }
+
 
     $scope.constMenu = function(options){
         console.log("constMenu called");
