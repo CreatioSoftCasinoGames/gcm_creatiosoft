@@ -4,13 +4,13 @@ var mongoose = require('mongoose'),
     leaderboard = mongoose.model('leaderboard'),
     gameinfo = require('../config/config').gameinfo;
 
-
+var leaderboardController = {};
 
 /**
    GET: /leaderboard
  */
 
-exports.getAll = function (req,res,next) {
+leaderboardController.getAll = function (req,res,next) {
   console.log("Request for GET leaderboard : ");
     var query = {
         gameId: gameinfo.gameId,
@@ -30,7 +30,7 @@ exports.getAll = function (req,res,next) {
    POST: /leaderboard
  */
 
-exports.create = function (req,res,next) {
+leaderboardController.create = function (req,res,next) {
   console.log("Request for create leaderboard : " + JSON.stringify(req.body));
     req.body.gameId = gameinfo.gameId;
     req.body.gameName = gameinfo.gameName;
@@ -42,4 +42,7 @@ exports.create = function (req,res,next) {
         }
     });
 };
+
+module.exports = leaderboardController;
+
 

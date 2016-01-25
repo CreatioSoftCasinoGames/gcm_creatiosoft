@@ -6,13 +6,13 @@ var mongoose = require('mongoose'),
 
 var _ = require('underscore');
 
-
+var top10playerController = {};
 
 /**
    GET: /top10player
  */
 
-exports.getAll = function (req,res,next) {
+top10playerController.getAll = function (req,res,next) {
   console.log("Request for GET top10player : " + JSON.stringify(req.body));
 
     var date = new Date();
@@ -38,7 +38,7 @@ exports.getAll = function (req,res,next) {
    POST: /top10player
  */
 
-exports.create = function (req,res,next) {
+top10playerController.create = function (req,res,next) {
   console.log("Request for creating top10player : " + JSON.stringify(req.body));
     var date = new Date();
         date.setHours(0,0,0,0);
@@ -121,3 +121,4 @@ function createtop10player(track1List, track2List, track3List, callback){
     });
 }
 
+module.exports = top10playerController;

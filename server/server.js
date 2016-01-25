@@ -3,9 +3,8 @@
 var express = require('express'),
     Db = require('./config/db'),
     config = require('./config/config');
-
-require('./model/leaderboard');
-require('./model/top10player');
+	
+require('./model/index');
 
 var bodyParser = require('body-parser');
 
