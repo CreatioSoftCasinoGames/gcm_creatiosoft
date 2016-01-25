@@ -9,5 +9,9 @@ module.exports = {
         db: 'LeaderBoard',
         username: '',
         password: ''
+    },
+    gameinfo: {
+        gameId: 'gameId',
+        gameName: 'gameName'
     }
 };

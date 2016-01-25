@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    leaderboard = mongoose.model('leaderboard');
+    leaderboard = mongoose.model('leaderboard'),
+    gameinfo = require('../config/config').gameinfo;
 
 
 
@@ -12,8 +13,8 @@ var mongoose = require('mongoose'),
 exports.getAll = function (req,res,next) {
   console.log("Request for GET leaderboard : ");
     var query = {
-        gameId: "gameId",
-        gameName: "gameName"
+        gameId: gameinfo.gameId,
+        gameName: gameinfo.gameName
     }
     leaderboard.getAll(query, function(err, result) {
       if (!err) {
@@ -31,8 +32,8 @@ exports.getAll = function (req,res,next) {
 
 exports.create = function (req,res,next) {
   console.log("Request for create leaderboard : " + JSON.stringify(req.body));
-    req.body.gameId = "gameId";
-    req.body.gameName = "gameName";
+    req.body.gameId = gameinfo.gameId;
+    req.body.gameName = gameinfo.gameName;
     leaderboard.createleaderboard(req.body, function(err, result) {
         if (!err) {
             return res.json({status:true,result: "Successfully updated"});

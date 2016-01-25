@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    top10player = mongoose.model('top10player');
+    top10player = mongoose.model('top10player'),
+    gameinfo = require('../config/config').gameinfo;
 
 var _ = require('underscore');
 
@@ -18,8 +19,8 @@ exports.getAll = function (req,res,next) {
         date.setHours(0,0,0,0);
 
     var query = {
-        gameId: "gameId",
-        gameName: "gameName",
+        gameId: gameinfo.gameId,
+        gameName: gameinfo.gameName,
         date: { $gt: date.getTime() }
     }
     top10player.getAll(query, function(err, result) {
@@ -42,8 +43,8 @@ exports.create = function (req,res,next) {
     var date = new Date();
         date.setHours(0,0,0,0);
     var query = {
-        gameId: "gameId",
-        gameName: "gameName",
+        gameId: gameinfo.gameId,
+        gameName: gameinfo.gameName,
         date: { $gt: date.getTime() }
     }
 
@@ -108,8 +109,8 @@ exports.create = function (req,res,next) {
 
 function createtop10player(track1List, track2List, track3List, callback){
     var data = {
-      gameId: "gameId",
-      gameName: "gameName",
+      gameId: gameinfo.gameId,
+      gameName: gameinfo.gameName,
       date: new Date().getTime(),
       top10playerTrack1: track1List,
       top10playerTrack2: track2List,
