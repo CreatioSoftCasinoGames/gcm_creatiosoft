@@ -3,10 +3,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-/**
-  * @module  User
-  * @description contain the details of user  
-*/
 
 var leaderboard = new Schema({
   
