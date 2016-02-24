@@ -1,0 +1,68 @@
+
+
+    <section class="primary" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <br><br><br>
+                    <div class='pull-left control-group'>
+                        <h3>Paid User</h3>
+                    </div>
+                    <br><br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                
+                    <form name="sentMessage" id="contactForm" novalidate="">
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level*</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.level">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Cap*</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.cap">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.type" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.value">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-7 pull-right">
+                                <button type="submit" class="btn btn-success btn-lg" ng-click="create()">Save</button>
+                            </div>
+                        </div>
+
+                                               
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+

@@ -12,7 +12,6 @@ var bingoAddController = {};
  */
 
 bingoAddController.getByType = function (req,res,next) {
-    console.log(req.params.paidType);
     if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){
       bingoAdd.getPaidUnpaid(function(err, result) {
         if (!err) {
