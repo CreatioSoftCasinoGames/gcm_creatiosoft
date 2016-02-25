@@ -16,11 +16,57 @@ bingoAddController.getByType = function (req,res,next) {
       bingoAdd.getPaidUnpaid(function(err, result) {
         if (!err) {
             var responseData = {};
-            if(req.params.paidType == 'unpaid')
-                responseData = result.unpaid;
-            if(req.params.paidType == 'paid')
-                responseData = result.paid;
+            if(req.params.paidType == 'unpaid'){
+                var responsObject = {};
+                if(result.unpaid.level)
+                    responsObject.level = result.unpaid.level;
+                if(result.unpaid.caps)
+                    responsObject.caps = result.unpaid.caps;
+                if(result.unpaid.ticket)
+                    responsObject.ticket = result.unpaid.ticket;
+                else
+                    responsObject.ticket = 0;
+                if(result.unpaid.coin)
+                    responsObject.coin = result.unpaid.coin;
+                else
+                    responsObject.coin = 0;
+                if(result.unpaid.power)
+                    responsObject.power = result.unpaid.power;
+                else
+                    responsObject.power = 0;
 
+                var data = {};
+                data['lobbyAdd'] = JSON.parse(JSON.stringify(responsObject));   //will have caps
+                data['dailyBonus'] = JSON.parse(JSON.stringify(responsObject));
+                data.dailyBonus.caps = undefined;
+                responseData = data;
+            }
+            if(req.params.paidType == 'paid'){
+                var responsObject = {};
+                if(result.paid.level)
+                    responsObject.level = result.paid.level;
+                if(result.paid.caps)
+                    responsObject.caps = result.paid.caps;
+                if(result.paid.ticket)
+                    responsObject.ticket = result.paid.ticket;
+                else
+                    responsObject.ticket = 0;
+                if(result.paid.coin)
+                    responsObject.coin = result.paid.coin;
+                else
+                    responsObject.coin = 0;
+                if(result.paid.power)
+                    responsObject.power = result.paid.power;
+                else
+                    responsObject.power = 0;
+
+                var data = {};
+                data['lobbyAdd'] = JSON.parse(JSON.stringify(responsObject));   //will have caps
+                data['dailyBonus'] = JSON.parse(JSON.stringify(responsObject));
+                data.dailyBonus.caps = undefined;
+                //data['dailyBonus'].caps = undefined;
+                responseData = data;
+            }
             return res.json({status:true, result: responseData});
         } else {
             return res.json({status:false, result:"Unable to get list"});
