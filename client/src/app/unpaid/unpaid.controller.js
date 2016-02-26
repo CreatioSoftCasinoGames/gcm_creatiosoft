@@ -2,6 +2,8 @@ Classified.controller('UnpaidController', ['$scope', '$http','$rootScope',  func
    
    $scope.init = function(){
    		$scope.data = {};
+        $scope.data.lobbyAdd = {};
+        $scope.data.dailyBonus = {};
         $scope.appList = [{
         	key: 'Ticket',
         	value: 'ticket'
@@ -18,17 +20,28 @@ Classified.controller('UnpaidController', ['$scope', '$http','$rootScope',  func
         .success(function(res){
             if(res.status){
             	if(res.result){
-            		$scope.data.level = res.result.level;
-                    $scope.data.cap = res.result.caps;
-                    if(res.result.coin){
-                        $scope.data.type = 'coin';
-                        $scope.data.value = res.result.coin;
-                    } else if(res.result.power){
-                        $scope.data.type = 'power';
-                        $scope.data.value = res.result.power;
-                    } else if(res.result.ticket){
-                        $scope.data.type = 'ticket';
-                        $scope.data.value = res.result.ticket;
+                    $scope.data.lobbyAdd.level = res.result.unpaid.lobbyAdd.level;
+                    $scope.data.dailyBonus.level = res.result.unpaid.dailyBonus.level;
+                    $scope.data.lobbyAdd.cap = res.result.unpaid.lobbyAdd.cap;
+                    if(res.result.unpaid.lobbyAdd.coin){
+                        $scope.data.lobbyAdd.type = 'coin';
+                        $scope.data.lobbyAdd.value = res.result.unpaid.lobbyAdd.coin;
+                    } else if(res.result.unpaid.lobbyAdd.power){
+                        $scope.data.lobbyAdd.type = 'power';
+                        $scope.data.lobbyAdd.value = res.result.unpaid.lobbyAdd.power;
+                    } else if(res.result.unpaid.lobbyAdd.ticket){
+                        $scope.data.lobbyAdd.type = 'ticket';
+                        $scope.data.lobbyAdd.value = res.result.unpaid.lobbyAdd.ticket;
+                    }
+                    if(res.result.unpaid.dailyBonus.coin){
+                        $scope.data.dailyBonus.type = 'coin';
+                        $scope.data.dailyBonus.value = res.result.unpaid.dailyBonus.coin;
+                    } else if(res.result.unpaid.dailyBonus.power){
+                        $scope.data.dailyBonus.type = 'power';
+                        $scope.data.dailyBonus.value = res.result.unpaid.dailyBonus.power;
+                    } else if(res.result.unpaid.dailyBonus.ticket){
+                        $scope.data.dailyBonus.type = 'ticket';
+                        $scope.data.dailyBonus.value = res.result.unpaid.dailyBonus.ticket;
                     }
             	}
             }
@@ -38,38 +51,21 @@ Classified.controller('UnpaidController', ['$scope', '$http','$rootScope',  func
     }
 
     $scope.create = function(){
-    	console.log($scope.data);
-    	if(!!$scope.data.level && !!$scope.data.cap && !!$scope.data.type && !!$scope.data.value){
-
-	    	var object = {
-	    		"level" : $scope.data.level,
-	    		"caps" : $scope.data.cap
-	    	}
-	    	if($scope.data.type == "coin"){
-	    		object["coin"] = $scope.data.value;
-	    	}
-	    	else if($scope.data.type == "ticket"){
-	    		object["ticket"] = $scope.data.value;
-	    	}
-	    	else if($scope.data.type == "power"){
-	    		object["power"] = $scope.data.value;
-	    	}
-
-	    	var obj1 = {};
-	    	obj1['unpaid'] = object;
-	    	$http.post("/bingoAdd/unpaid", obj1)
-            .success(function(res){
-                alert("successfully updated");
-                $scope.data = {};
-            }).error(function(err){
-                alert(err);
-            }); 
-    	}
-    	else{
-    		alert("Insufficient Data !!");
-    	}
+        if(!!$scope.data.lobbyAdd.level && !!$scope.data.lobbyAdd.cap && !!$scope.data.lobbyAdd.type && !!$scope.data.lobbyAdd.value && !!$scope.data.dailyBonus.level && !!$scope.data.dailyBonus.type && !!$scope.data.dailyBonus.value){
+            var obj1 = {};
+             obj1['unpaid'] = $scope.data;
+             $http.post("/bingoAdd/unpaid", obj1)
+                .success(function(res){
+                    alert("successfully updated");
+                    $scope.init();
+                }).error(function(err){
+                    alert(err);
+                }); 
+            }
+            else{
+             alert("Insufficient Data !!");
+            }
     }
-
    $scope.init();
 
 }]);

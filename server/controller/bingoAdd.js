@@ -15,59 +15,21 @@ bingoAddController.getByType = function (req,res,next) {
     if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){
       bingoAdd.getPaidUnpaid(function(err, result) {
         if (!err) {
-            var responseData = {};
-            if(req.params.paidType == 'unpaid'){
-                var responsObject = {};
-                if(result.unpaid.level)
-                    responsObject.level = result.unpaid.level;
-                if(result.unpaid.caps)
-                    responsObject.caps = result.unpaid.caps;
-                if(result.unpaid.ticket)
-                    responsObject.ticket = result.unpaid.ticket;
-                else
-                    responsObject.ticket = 0;
-                if(result.unpaid.coin)
-                    responsObject.coin = result.unpaid.coin;
-                else
-                    responsObject.coin = 0;
-                if(result.unpaid.power)
-                    responsObject.power = result.unpaid.power;
-                else
-                    responsObject.power = 0;
-
-                var data = {};
-                data['lobbyAdd'] = JSON.parse(JSON.stringify(responsObject));   //will have caps
-                data['dailyBonus'] = JSON.parse(JSON.stringify(responsObject));
-                data.dailyBonus.caps = undefined;
-                responseData = data;
+            if(!result){
+                return res.json({status:false, result:null});
             }
-            if(req.params.paidType == 'paid'){
-                var responsObject = {};
-                if(result.paid.level)
-                    responsObject.level = result.paid.level;
-                if(result.paid.caps)
-                    responsObject.caps = result.paid.caps;
-                if(result.paid.ticket)
-                    responsObject.ticket = result.paid.ticket;
-                else
-                    responsObject.ticket = 0;
-                if(result.paid.coin)
-                    responsObject.coin = result.paid.coin;
-                else
-                    responsObject.coin = 0;
-                if(result.paid.power)
-                    responsObject.power = result.paid.power;
-                else
-                    responsObject.power = 0;
-
-                var data = {};
-                data['lobbyAdd'] = JSON.parse(JSON.stringify(responsObject));   //will have caps
-                data['dailyBonus'] = JSON.parse(JSON.stringify(responsObject));
-                data.dailyBonus.caps = undefined;
-                //data['dailyBonus'].caps = undefined;
-                responseData = data;
+            else{
+                if(req.params.paidType == 'paid' ){
+                    if(result.unpaid)
+                        result.unpaid = undefined;
+                }
+                if(req.params.paidType == 'unpaid' ){
+                    if(result.paid)
+                        result.paid = undefined;
+                }
+                
+                    return res.json({status:true, result: result});
             }
-            return res.json({status:true, result: responseData});
         } else {
             return res.json({status:false, result:"Unable to get list"});
         }
@@ -90,16 +52,93 @@ bingoAddController.create = function (req,res,next) {
       if(result == null){
         var obj = {};
         if(req.params.paidType == 'unpaid')
+        {
             obj.unpaid = req.body.unpaid;
-        if(req.params.paidType == 'paid')
+            if(req.body.unpaid.lobbyAdd.type == "ticket"){
+                obj.unpaid.lobbyAdd["ticket"] = req.body.unpaid.lobbyAdd.value;
+            }
+            else if(req.body.unpaid.lobbyAdd.type == "coin"){
+                obj.unpaid.lobbyAdd["coin"] = req.body.unpaid.lobbyAdd.value;
+            }
+            else if(req.body.unpaid.lobbyAdd.type == "power"){
+                obj.unpaid.lobbyAdd["power"] = req.body.unpaid.lobbyAdd.value;
+            }
+            if(req.body.unpaid.dailyBonus.type == "ticket"){
+                obj.unpaid.dailyBonus["ticket"] = req.body.unpaid.dailyBonus.value;
+            }
+            else if(req.body.unpaid.dailyBonus.type == "coin"){
+                obj.unpaid.dailyBonus["coin"] = req.body.unpaid.dailyBonus.value;
+            }
+            else if(req.body.unpaid.dailyBonus.type == "power"){
+                obj.unpaid.dailyBonus["power"] = req.body.unpaid.dailyBonus.value;
+            }
+        }
+        if(req.params.paidType == 'paid'){
             obj.paid = req.body.paid;
+            if(req.body.paid.lobbyAdd.type == "ticket"){
+                obj.paid.lobbyAdd["ticket"] = req.body.paid.lobbyAdd.value;
+            }
+            else if(req.body.paid.lobbyAdd.type == "coin"){
+                obj.paid.lobbyAdd["coin"] = req.body.paid.lobbyAdd.value;
+            }
+            else if(req.body.paid.lobbyAdd.type == "power"){
+                obj.paid.lobbyAdd["power"] = req.body.paid.lobbyAdd.value;
+            }
+           if(req.body.paid.dailyBonus.type == "ticket"){
+                obj.paid.dailyBonus["ticket"] = req.body.paid.dailyBonus.value;
+            }
+            else if(req.body.paid.dailyBonus.type == "coin"){
+                obj.paid.dailyBonus["coin"] = req.body.paid.dailyBonus.value;
+            }
+            else if(req.body.paid.dailyBonus.type == "power"){
+                obj.paid.dailyBonus["power"] = req.body.paid.dailyBonus.value;
+            }
+        }
         result = new bingoAdd(obj);
       }
       else{
-        if(req.params.paidType == 'unpaid')
+        if(req.params.paidType == 'unpaid'){
             result.unpaid = req.body.unpaid;
-        if(req.params.paidType == 'paid')
+            if(req.body.unpaid.lobbyAdd.type == "ticket"){
+                result.unpaid.lobbyAdd["ticket"] = req.body.unpaid.lobbyAdd.value;
+            }
+            else if(req.body.unpaid.lobbyAdd.type == "coin"){
+               result.unpaid.lobbyAdd["coin"] = req.body.unpaid.lobbyAdd.value;
+            }
+            else if(req.body.unpaid.lobbyAdd.type == "power"){
+               result.unpaid.lobbyAdd["power"] = req.body.unpaid.lobbyAdd.value;
+            }
+            if(req.body.unpaid.dailyBonus.type == "ticket"){
+                result.unpaid.dailyBonus["ticket"] = req.body.unpaid.dailyBonus.value;
+            }
+            else if(req.body.unpaid.dailyBonus.type == "coin"){
+               result.unpaid.dailyBonus["coin"] = req.body.unpaid.dailyBonus.value;
+            }
+            else if(req.body.unpaid.dailyBonus.type == "power"){
+               result.unpaid.dailyBonus["power"] = req.body.unpaid.dailyBonus.value;
+            }
+        }
+        if(req.params.paidType == 'paid'){
             result.paid = req.body.paid;
+            if(req.body.paid.lobbyAdd.type == "ticket"){
+                result.paid.lobbyAdd["ticket"] = req.body.paid.lobbyAdd.value;
+            }
+            else if(req.body.paid.lobbyAdd.type == "coin"){
+               result.paid.lobbyAdd["coin"] = req.body.paid.lobbyAdd.value;
+            }
+            else if(req.body.paid.lobbyAdd.type == "power"){
+               result.paid.lobbyAdd["power"] = req.body.paid.lobbyAdd.value;
+            }
+            if(req.body.paid.dailyBonus.type == "ticket"){
+                result.paid.dailyBonus["ticket"] = req.body.paid.dailyBonus.value;
+            }
+            else if(req.body.paid.dailyBonus.type == "coin"){
+               result.paid.dailyBonus["coin"] = req.body.paid.dailyBonus.value;
+            }
+            else if(req.body.paid.dailyBonus.type == "power"){
+               result.paid.dailyBonus["power"] = req.body.paid.dailyBonus.value;
+            }
+        }
       }
       bingoAdd.createPaidUnpaid(result, function(err, result) {
         if (!err) {

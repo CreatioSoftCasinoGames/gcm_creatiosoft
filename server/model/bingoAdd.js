@@ -8,29 +8,58 @@ var bingoAdd = new Schema({
   
   paid: {
 
-    level: Number,
+    lobbyAdd : {
 
-    ticket: Number,
+      level: Number,
 
-    coin: Number,
+      ticket: { type: Number, default: 0},
 
-    power: Number,
+      coin: { type: Number, default: 0},
 
-    caps: Number
+      power: { type: Number, default: 0},
+
+      cap: Number
+    },
+
+    dailyBonus: {
+
+      level: Number,
+
+     ticket: { type: Number, default: 0},
+
+      coin: { type: Number, default: 0},
+
+      power: { type: Number, default: 0},
+
+    }
 
   },
 
-  unpaid: {
+  unpaid : {
 
-    level: Number,
+    lobbyAdd : {
 
-    ticket: Number,
+      level: Number,
 
-    coin: Number,
+     ticket: { type: Number, default: 0},
 
-    power: Number,
+      coin: { type: Number, default: 0},
 
-    caps: Number
+      power: { type: Number, default: 0},
+
+      cap: Number
+    },
+
+    dailyBonus: {
+
+      level: Number,
+
+      ticket: { type: Number, default: 0},
+
+      coin: { type: Number, default: 0},
+
+      power: { type: Number, default: 0},
+    }
   }
   
 });

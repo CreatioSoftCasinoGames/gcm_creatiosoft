@@ -3,7 +3,8 @@
 Classified.controller('PaidController', ['$scope', '$http','$rootScope', function($scope, $http,$rootScope) {
 	 $scope.init = function(){
    		$scope.data = {};
-        $scope.initialData = {};
+        $scope.data.lobbyAdd = {};
+        $scope.data.dailyBonus = {};
         $scope.appList = [{
         	key: 'Ticket',
         	value: 'ticket'
@@ -21,17 +22,28 @@ Classified.controller('PaidController', ['$scope', '$http','$rootScope', functio
         .success(function(res){
             if(res.status){
                 if(res.result){
-                    $scope.data.level = res.result.level;
-                    $scope.data.cap = res.result.caps;
-                    if(res.result.coin){
-                        $scope.data.type = 'coin';
-                        $scope.data.value = res.result.coin;
-                    } else if(res.result.power){
-                        $scope.data.type = 'power';
-                        $scope.data.value = res.result.power;
-                    } else if(res.result.ticket){
-                        $scope.data.type = 'ticket';
-                        $scope.data.value = res.result.ticket;
+                    $scope.data.lobbyAdd.level = res.result.paid.lobbyAdd.level;
+                    $scope.data.dailyBonus.level = res.result.paid.dailyBonus.level;
+                    $scope.data.lobbyAdd.cap = res.result.paid.lobbyAdd.cap;
+                    if(res.result.paid.lobbyAdd.coin){
+                        $scope.data.lobbyAdd.type = 'coin';
+                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.coin;
+                    } else if(res.result.paid.lobbyAdd.power){
+                        $scope.data.lobbyAdd.type = 'power';
+                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.power;
+                    } else if(res.result.paid.lobbyAdd.ticket){
+                        $scope.data.lobbyAdd.type = 'ticket';
+                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.ticket;
+                    }
+                    if(res.result.paid.dailyBonus.coin){
+                        $scope.data.dailyBonus.type = 'coin';
+                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.coin;
+                    } else if(res.result.paid.dailyBonus.power){
+                        $scope.data.dailyBonus.type = 'power';
+                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.power;
+                    } else if(res.result.paid.dailyBonus.ticket){
+                        $scope.data.dailyBonus.type = 'ticket';
+                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.ticket;
                     }
                 }
             }
@@ -41,36 +53,20 @@ Classified.controller('PaidController', ['$scope', '$http','$rootScope', functio
     }
 
     $scope.create = function(){
-    	console.log($scope.data);
-    	if(!!$scope.data.level && !!$scope.data.cap && !!$scope.data.type && !!$scope.data.value){
-
-	    	var object = {
-	    		"level" : $scope.data.level,
-	    		"caps" : $scope.data.cap
-	    	}
-	    	if($scope.data.type == "coin"){
-	    		object["coin"] = $scope.data.value;
-	    	}
-	    	else if($scope.data.type == "ticket"){
-	    		object["ticket"] = $scope.data.value;
-	    	}
-	    	else if($scope.data.type == "power"){
-	    		object["power"] = $scope.data.value;
-	    	}
-
-	    	var obj1 = {};
-	    	obj1['paid'] = object;
-	    	$http.post("/bingoAdd/paid", obj1)
-            .success(function(res){
-                alert("successfully updated");
-                $scope.data = {};
-            }).error(function(err){
-                alert(err);
-            }); 
-    	}
-    	else{
-    		alert("Insufficient Data !!");
-    	}
+        if(!!$scope.data.lobbyAdd.level && !!$scope.data.lobbyAdd.cap && !!$scope.data.lobbyAdd.type && !!$scope.data.lobbyAdd.value && !!$scope.data.dailyBonus.level && !!$scope.data.dailyBonus.type && !!$scope.data.dailyBonus.value){
+            var obj1 = {};
+             obj1['paid'] = $scope.data;
+             $http.post("/bingoAdd/paid", obj1)
+                .success(function(res){
+                    alert("successfully updated");
+                    $scope.init();
+                }).error(function(err){
+                    alert(err);
+                }); 
+            }
+            else{
+             alert("Insufficient Data !!");
+            }
     }
 
    $scope.init();

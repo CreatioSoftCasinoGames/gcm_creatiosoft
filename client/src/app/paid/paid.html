@@ -19,10 +19,21 @@
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                                 <div class="col-md-2 nopadding">
+                                    <h4>Lobby Add</h4>
+                                </div>
+                                <div class="col-md-5">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
                                     <label>Level*</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control" ng-model="data.level">
+                                    <input type="number" class="form-control" ng-model="data.lobbyAdd.level">
                                 </div>
                             </div>
                         </div>
@@ -32,20 +43,57 @@
                                     <label>Cap*</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control" ng-model="data.cap">
+                                    <input type="number" class="form-control" ng-model="data.lobbyAdd.cap">
                                 </div>
                             </div>
                         </div>
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                                 <div class="col-md-2 nopadding">
-                                    <select class="form-control" ng-model="data.type" >
+                                    <select class="form-control" ng-model="data.lobbyAdd.type" >
                                         <option value="" style="display:none;">Select</option>
                                         <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control" ng-model="data.value">
+                                    <input type="number" class="form-control" ng-model="data.lobbyAdd.value">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <h4>Daily Bonus</h4>
+                                </div>
+                                <div class="col-md-5">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                           <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level*</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.dailyBonus.level">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.dailyBonus.type" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.dailyBonus.value">
                                 </div>
                             </div>
                         </div>
@@ -63,6 +111,5 @@
             </div>
         </div>
     </section>
-
 </div>
 
