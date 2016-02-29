@@ -22,28 +22,28 @@ Classified.controller('PaidController', ['$scope', '$http','$rootScope', functio
         .success(function(res){
             if(res.status){
                 if(res.result){
-                    $scope.data.lobbyAdd.level = res.result.paid.lobbyAdd.level;
-                    $scope.data.dailyBonus.level = res.result.paid.dailyBonus.level;
-                    $scope.data.lobbyAdd.cap = res.result.paid.lobbyAdd.cap;
-                    if(res.result.paid.lobbyAdd.coin){
+                    $scope.data.lobbyAdd.level = res.result.lobbyAdd.level;
+                    $scope.data.dailyBonus.level = res.result.dailyBonus.level;
+                    $scope.data.lobbyAdd.cap = res.result.lobbyAdd.cap;
+                    if(res.result.lobbyAdd.coin){
                         $scope.data.lobbyAdd.type = 'coin';
-                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.coin;
-                    } else if(res.result.paid.lobbyAdd.power){
+                        $scope.data.lobbyAdd.value = res.result.lobbyAdd.coin;
+                    } else if(res.result.lobbyAdd.power){
                         $scope.data.lobbyAdd.type = 'power';
-                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.power;
-                    } else if(res.result.paid.lobbyAdd.ticket){
+                        $scope.data.lobbyAdd.value = res.result.lobbyAdd.power;
+                    } else if(res.result.lobbyAdd.ticket){
                         $scope.data.lobbyAdd.type = 'ticket';
-                        $scope.data.lobbyAdd.value = res.result.paid.lobbyAdd.ticket;
+                        $scope.data.lobbyAdd.value = res.result.lobbyAdd.ticket;
                     }
-                    if(res.result.paid.dailyBonus.coin){
+                    if(res.result.dailyBonus.coin){
                         $scope.data.dailyBonus.type = 'coin';
-                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.coin;
-                    } else if(res.result.paid.dailyBonus.power){
+                        $scope.data.dailyBonus.value = res.result.dailyBonus.coin;
+                    } else if(res.result.dailyBonus.power){
                         $scope.data.dailyBonus.type = 'power';
-                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.power;
-                    } else if(res.result.paid.dailyBonus.ticket){
+                        $scope.data.dailyBonus.value = res.result.dailyBonus.power;
+                    } else if(res.result.dailyBonus.ticket){
                         $scope.data.dailyBonus.type = 'ticket';
-                        $scope.data.dailyBonus.value = res.result.paid.dailyBonus.ticket;
+                        $scope.data.dailyBonus.value = res.result.dailyBonus.ticket;
                     }
                 }
             }
