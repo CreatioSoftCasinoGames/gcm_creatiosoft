@@ -20,24 +20,6 @@ iapBundleController.getAlliap = function (req,res) {
   	});
 };
 
-/**
-   GET: /iapBundle/:level
- */
-
-iapBundleController.getByLevel = function (req,res) {
-    if(req.params.level){
-      	iapBundle.getiap(req.params.level, function(err, result){
-      		if(err){
-      			return res.json({status:false, info:"Oops something went wrong!!"});
-      		}
-      		else{
-      			return res.json({status:true, result: result});
-      		}
-      	});
-    }
-    else
-      return res.json({status:false, info:"Invalid request"});
-};
 
 /**
    GET: /iapBundle/:level

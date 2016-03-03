@@ -12,9 +12,6 @@ module.exports = function(app){
 		.post(bingoAdd.create)
        	.get(bingoAdd.getByType);
 
-	app.route('/iapBundle/:level')
-       	.get(iapBundle.getByLevel);
-
     app.route('/iapBundle')
     	.get(iapBundle.getAlliap)
        	.post(iapBundle.createIapBundle);
