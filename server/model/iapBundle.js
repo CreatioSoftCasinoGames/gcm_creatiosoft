@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
 
 
 var iapBundle = new Schema({
+
+  packType: { type: String },
   
   levelStart: { type: Number },
 
@@ -47,12 +49,16 @@ iapBundle.statics.getAlliap = function(callback) {
     this.find({}, callback);
 };
 
+iapBundle.statics.getAlliapByType = function(type, callback) {
+    this.find({packType: type}, callback);
+};
+
 iapBundle.statics.getiap = function(level, type, callback) {
-    this.findOne({packName: type, levelStart: { $lte: level }, levelEnd: { $gte: level }}, callback);
+    this.findOne({packType: type, levelStart: { $lte: level }, levelEnd: { $gte: level }}, callback);
 };
 
 iapBundle.statics.chekiapExistByLevelRange = function(type, levelStart, levelEnd, callback) {
-    this.find({packName: type,levelStart: { $lte: levelStart }, levelEnd: { $gte: levelEnd }}, callback);
+    this.find({packType: type,levelStart: { $lte: levelStart }, levelEnd: { $gte: levelEnd }}, callback);
 };
 
 iapBundle.statics.createiap = function(requestObject, callback) {

@@ -20,6 +20,21 @@ iapBundleController.getAlliap = function (req,res) {
   	});
 };
 
+/**
+   GET: /iapBundle
+ */
+
+iapBundleController.getAlliapByType = function (req,res) {
+  	iapBundle.getAlliapByType(req.params.type, function(err, result){
+  		if(err){
+  			return res.json({status:false, info:"Oops something went wrong!!"});
+  		}
+  		else{
+  			return res.json({status:true, result: result});
+  		}
+  	});
+};
+
 
 /**
    GET: /iapBundle/:level

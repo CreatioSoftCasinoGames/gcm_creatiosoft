@@ -16,6 +16,9 @@ module.exports = function(app){
     	.get(iapBundle.getAlliap)
        	.post(iapBundle.createIapBundle);
 
+    app.route('/iapBundle/:type')
+    	.get(iapBundle.getAlliapByType);
+
     app.route('/iapBundleByTime/:level/:type')
        	.get(iapBundle.getByLevelAndTime);
 }
