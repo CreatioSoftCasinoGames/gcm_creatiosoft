@@ -11,7 +11,7 @@ var bingoAddController = {};
    :paidType -> unpaid OR paid
  */
 
-bingoAddController.getByType = function (req,res,next) {
+bingoAddController.getByType = function (req,res) {
     if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){
       bingoAdd.getPaidUnpaid(function(err, result) {
         if (!err) {
@@ -34,7 +34,7 @@ bingoAddController.getByType = function (req,res,next) {
                     return res.json({status:true, result: obj});
             }
         } else {
-            return res.json({status:false, result:"Unable to get list"});
+            return res.json({status:false, info:"Unable to get list"});
         }
       });
     }
@@ -49,7 +49,7 @@ bingoAddController.getByType = function (req,res,next) {
    :paidType -> unpaid OR paid
  */
 
-bingoAddController.create = function (req,res,next) {
+bingoAddController.create = function (req,res) {
   if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){
     bingoAdd.getPaidUnpaid(function(err, result) {
       if(result == null){
