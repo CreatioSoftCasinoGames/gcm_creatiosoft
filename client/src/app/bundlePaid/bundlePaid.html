@@ -1,0 +1,198 @@
+
+
+    <section class="primary" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <br><br><br>
+                    <div class='pull-left control-group'>
+                        <h3>Paid User</h3>
+                    </div>
+                    <br><br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                
+                    <form name="bundlePaid" id="contactForm" novalidate="">
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Pack Type</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" name="paid" value="Paid" class="form-control" readonly ng-model="data.packType">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level start</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.levelStart">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level end</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.levelEnd">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Packname</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" ng-model="data.packName ">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Original price</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.originalPrice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>New price</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.newPrice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Sku Id</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" ng-model="data.skuId">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Deal Start Date Time</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input  datetime-picker class="form-control" ng-model="data.dealStartDateTime">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Deal End Date Time</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input  datetime-picker class="form-control" ng-model="data.dealEndDateTime">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Purchase limit</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.purchaseLimit">
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Discount percent</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.discountPercent">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item1" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item1value">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item2" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item2value">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item3" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item3value">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <br>
+                        <br>
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-7 pull-right">
+                                <button type="submit" class="btn btn-success btn-lg" ng-click="create()">Save</button>
+                            </div>
+                        </div>
+
+                                               
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+

@@ -57,6 +57,7 @@ iapBundleController.getByLevelAndTime = function (req,res) {
 	      				result.levelStart = undefined;
 	      				result.levelEnd = undefined;
 	      				result.__v = undefined;
+                result.packType = undefined;
 
 	      				var reso = JSON.parse(JSON.stringify(result));
 	      				reso.timeRemaining = timeRemainingInSecond;
@@ -81,9 +82,9 @@ iapBundleController.getByLevelAndTime = function (req,res) {
 */
 
 iapBundleController.createIapBundle = function (req,res) {
-
 		iapBundle.chekiapExistByLevelRange(req.body.packName, req.body.levelStart, req.body.levelEnd, function(err, result){
       		if(err){
+            
       			return res.json({status:false, info:"Oops something went wrong!!"});
       		}
       		else{
@@ -94,6 +95,7 @@ iapBundleController.createIapBundle = function (req,res) {
       			else{      				
 			      	iapBundle.createiap(req.body, function(err, result){
 			      		if(err){
+                  console.log(err);
 			      			return res.json({status:false, info:"Oops something went wrong!!"});
 			      		}
 			      		else{

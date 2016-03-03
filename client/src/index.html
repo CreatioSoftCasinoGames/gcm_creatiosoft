@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="assets/stylesheet/custom.css">
+   <link rel="stylesheet" type="text/css" href="bower_components/angularjs-datetime-picker/angularjs-datetime-picker.css" />
    <style>
    		  .partial-container{
    		  	margin-bottom: 75px;
@@ -34,11 +35,21 @@
                     <a href="#page-top"></a>
                 </li>
                 <li class="page-scroll">
+                    <a href="#/list">List</a>
+                </li>  
+                <li class="page-scroll">
+                    <a href="#/bundlePaid">Bundle Paid</a>
+                </li>  
+                <li class="page-scroll">
+                    <a href="#/bundleUnpaid">Bundle Unpaid</a>
+                </li>  
+                <li class="page-scroll">
                     <a href="#/paid">Paid</a>
                 </li>
                 <li class="page-scroll">
                     <a href="#/unpaid">Un Paid</a>
-                </li>                
+                </li>    
+                            
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -56,6 +67,9 @@
 <script type="text/javascript" src="app/app.js"></script>
 <script type="text/javascript" src="app/paid/paid.controller.js"></script>
 <script type="text/javascript" src="app/unpaid/unpaid.controller.js"></script>
-
+<script type="text/javascript" src="app/list/list.controller.js"></script>
+<script type="text/javascript" src="app/bundleUnpaid/bundleUnpaid.controller.js"></script>
+<script type="text/javascript" src="app/bundlePaid/bundlePaid.controller.js"></script>
+<script type="text/javascript" src="bower_components/angularjs-datetime-picker/angularjs-datetime-picker.js"></script>
 </body>
 </html>
