@@ -69,7 +69,6 @@ Classified.controller('BundlePaidController', ['$scope', '$http','$rootScope', f
             if($scope.data.item1 == $scope.data.item2 || $scope.data.item1 == $scope.data.item3 || $scope.data.item2 == $scope.data.item3){
                 alert("Select different values");
             } else{
-                console.log($scope.data);
                  var obj = {};
                 
                  obj[$scope.data.item1] = $scope.data.item1value;

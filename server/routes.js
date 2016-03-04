@@ -9,7 +9,7 @@ var bingoAdd  = require('./controller/bingoAdd'),
 module.exports = function(app){
 
     app.route('/bingoAdd/:paidType')
-		.post(bingoAdd.create)
+		    .post(bingoAdd.create)
        	.get(bingoAdd.getByType);
 
     app.route('/iapBundle')
@@ -18,6 +18,9 @@ module.exports = function(app){
 
     app.route('/iapBundle/:type')
     	.get(iapBundle.getAlliapByType);
+
+      app.route('/iapBundle/update/:bundleId')
+      .put(iapBundle.updateIapBundle);
 
     app.route('/iapBundleByTime/:level/:type')
        	.get(iapBundle.getByLevelAndTime);

@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-
+   var  ObjectId = Schema.ObjectId;
 
 var iapBundle = new Schema({
 
@@ -64,5 +64,10 @@ iapBundle.statics.chekiapExistByLevelRange = function(type, levelStart, levelEnd
 iapBundle.statics.createiap = function(requestObject, callback) {
     this.create(requestObject, callback);
 };
+
+iapBundle.statics.updateiapBundle = function(bundleId, reqObj, callback) {
+  this.update({_id: bundleId}, reqObj, callback);
+};
+
 
 mongoose.model('iapBundle', iapBundle);

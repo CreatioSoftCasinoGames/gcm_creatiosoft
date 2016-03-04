@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 
 var iapBundleController = {};
 
+
 /**
    GET: /iapBundle
  */
@@ -105,8 +106,17 @@ iapBundleController.createIapBundle = function (req,res) {
       			}
       		}
       	});
+};
 
-
+iapBundleController.updateIapBundle = function (req,res) {
+    iapBundle.updateiapBundle(req.params.bundleId, req.body, function(err, result){
+        if(err){
+          return res.json({status:false, info:"Oops something went wrong!!"});
+        }
+        else{
+          return res.json({status:true, result:result});
+        }
+    });
 };
 
 

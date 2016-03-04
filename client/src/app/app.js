@@ -30,7 +30,6 @@ Classified.config(['$routeProvider','$locationProvider','$httpProvider', functio
     })
 	.otherwise({
 		redirectTo: '/list',
-		
 	});
 		
 }])

@@ -9,52 +9,231 @@
                     <br><br>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-show = "disp">
                 <div class="col-lg-8 col-lg-offset-2">
-                
                     <form name="list" id="contactForm" novalidate="">
-
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                                 <div class="col-md-2 nopadding">
-                                    <select class="form-control" ng-model="data.items" >
+                                    <select class="form-control" ng-model="data.itemSelect" >
                                         <option value="" style="display:none;">Select</option>
                                         <option ng-repeat="item in appList"  value="{{item.value}}">{{item.key}}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                <button type="submit" class="btn btn-success btn-md" ng-click="getList()">Save</button>
-                                   
+                                     <button type="submit" class="btn btn-success btn-md" ng-click="getList(data.itemSelect)">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Level Start</th>
+                                    <th>Level End</th>
+                                    <th>Packname</th>
+                                    <th>SKU Id</th>
+                                    <th>Deal Start Time</th>
+                                    <th>Deal End Time</th>
+                                    <th></th>
+                                </tr>
+                                <tr ng-repeat="localList in list">
+                                    <td>{{localList.levelStart}}</th>
+                                    <td>{{localList.levelEnd}}</td>
+                                    <td>{{localList.packName}}</td>
+                                    <td>{{localList.skuId}}</td>
+                                    <td>{{formateDate(localList.dealStartDateTime)}}</td>
+                                    <td>{{formateDate(localList.dealEndDateTime)}}</td>
+                                     <td><button type="button" class="btn btn-success btn-md" ng-click="edit(localList)">Edit</button></td>
+                                    <!-- <td><button type="button" class="btn btn-danger" ng-click="delete(push.name)">Delete</button></td> -->
+                                </tr>
+                            </table>
+                        </div>                                                                    
+                    </form>
+                </div>
+            </div>
+    
+    <!-- /**************************************************************/ -->
+            </br>
+            </br>
+            </br>
+            </br>
+            <div class="col-lg-8 col-lg-offset-2" ng-hide = "disp">
+                    <form name="bundlePaid" id="contactForm" novalidate="">
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Pack Type</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" name="paid" value="Paid" class="form-control" readonly ng-model="data.packType">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level start</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.levelStart">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Level end</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.levelEnd">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Packname</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" ng-model="data.packName ">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Original price</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.originalPrice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>New price</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.newPrice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Sku Id</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" ng-model="data.skuId">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Deal Start Date Time</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input  datetime-picker class="form-control" ng-model="data.dealStartDateTime">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Deal End Date Time</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input  datetime-picker class="form-control" ng-model="data.dealEndDateTime">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Purchase limit</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.purchaseLimit">
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <label>Discount percent</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.discountPercent">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item[0].key" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in bundleList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item[0].value">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item[1].key" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in bundleList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item[1].value">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <div class="col-md-2 nopadding">
+                                    <select class="form-control" ng-model="data.item[2].key" >
+                                        <option value="" style="display:none;">Select</option>
+                                        <option ng-repeat="item in bundleList"  value="{{item.value}}">{{item.key}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control" ng-model="data.item[2].value">
                                 </div>
                             </div>
                         </div>
                         
                         <br>
                         <br>
-                         <div class="col-sm-12">
-    <table class="table table-striped">
-        <tr>
-            <th>Level Start</th>
-            <th>Level End</th>
-            <th>Packname</th>
-            <th>SKU Id</th>
-            <th>Deal Start Time</th>
-            <th>Deal End Time</th>
-        </tr>
-        <tr ng-repeat="localList in list">
-            <td>{{localList.levelStart}}</th>
-            <td>{{localList.levelEnd}}</td>
-            <td>{{localList.packName}}</td>
-            <td>{{localList.skuId}}</td>
-            <td>{{formateDate(localList.dealStartDateTime)}}</td>
-            <td>{{formateDate(localList.dealEndDateTime)}}</td>
-            <!-- <td><button type="button" class="btn btn-danger" ng-click="delete(push.name)">Delete</button></td> -->
-        </tr>
-    </table>
-</div>                                                                    
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-2">
+                            </div>
+                             <div class="form-group col-xs-5">
+                                     <button type="submit" class="btn btn-success btn-md" ng-click="back()">Cancel</button>
+                                      <button type="submit" class="btn btn-success btn-md" ng-click="update(data._id)">Update</button>
+                                </div>
+                        </div>
                     </form>
                 </div>
-            </div>
         </div>
     </section>
-</div>
