@@ -28,39 +28,6 @@ Classified.controller('BundlePaidController', ['$scope', '$http','$rootScope', f
             key: 'Tickets',
             value: 'tickets'
         }];
-
-        // $http.get("/bingoAdd/paid")
-        // .success(function(res){
-        //     if(res.status){
-        //         if(res.result){
-        //             $scope.data.lobbyAdd.level = res.result.lobbyAdd.level;
-        //             $scope.data.dailyBonus.level = res.result.dailyBonus.level;
-        //             $scope.data.lobbyAdd.cap = res.result.lobbyAdd.cap;
-        //             if(res.result.lobbyAdd.coin){
-        //                 $scope.data.lobbyAdd.type = 'coin';
-        //                 $scope.data.lobbyAdd.value = res.result.lobbyAdd.coin;
-        //             } else if(res.result.lobbyAdd.power){
-        //                 $scope.data.lobbyAdd.type = 'power';
-        //                 $scope.data.lobbyAdd.value = res.result.lobbyAdd.power;
-        //             } else if(res.result.lobbyAdd.ticket){
-        //                 $scope.data.lobbyAdd.type = 'ticket';
-        //                 $scope.data.lobbyAdd.value = res.result.lobbyAdd.ticket;
-        //             }
-        //             if(res.result.dailyBonus.coin){
-        //                 $scope.data.dailyBonus.type = 'coin';
-        //                 $scope.data.dailyBonus.value = res.result.dailyBonus.coin;
-        //             } else if(res.result.dailyBonus.power){
-        //                 $scope.data.dailyBonus.type = 'power';
-        //                 $scope.data.dailyBonus.value = res.result.dailyBonus.power;
-        //             } else if(res.result.dailyBonus.ticket){
-        //                 $scope.data.dailyBonus.type = 'ticket';
-        //                 $scope.data.dailyBonus.value = res.result.dailyBonus.ticket;
-        //             }
-        //         }
-        //     }
-        // }).error(function(err){
-  
-        // });
     }
 
     $scope.create = function(){
@@ -83,17 +50,31 @@ Classified.controller('BundlePaidController', ['$scope', '$http','$rootScope', f
                  $scope.data.dealEndDateTime = new Date($scope.data.dealEndDateTime).getTime();
                  $scope.data.dealStartDateTime = new Date($scope.data.dealStartDateTime).getTime();
                  $scope.data.items = obj;
-                 $http.post("/iapBundle", $scope.data)
-                    .success(function(res){
-                        if(res.status){
-                            alert("successfully updated");
+                 if($scope.data.levelStart <= $scope.data.levelEnd){
+                    if($scope.data.dealStartDateTime < $scope.data.dealEndDateTime){
+                     $http.post("/iapBundle", $scope.data)
+                        .success(function(res){
+                            if(res.status){
+                                alert("successfully updated");
+                                $scope.init();
+                            }
+                            else{
+
+                                alert(res.info);
+                                $scope.init();
+                            }
+
+                         }).error(function(err){
+                            console.log(err);
+                            alert("Oops Something went wrong !!");
                             $scope.init();
-                        }
-                        else
-                            alert(res.info);
-                    }).error(function(err){
-                        alert(err);
-                    }); 
+                        }); 
+                    }else {
+                        alert("Date Start Time should be smaller then Date End Time!!");
+                    }
+                 } else {
+                    alert("Level Start should be smaller or equal to Level End!!");
+                 }
                 }
             }
             else{

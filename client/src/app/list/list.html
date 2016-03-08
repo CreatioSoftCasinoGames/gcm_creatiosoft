@@ -1,15 +1,15 @@
  <section class="primary" id="contact">
         <div class="container">
+          <div ng-show = "disp">
             <div class="row">
-                <div class="col-lg-12 text-center">
+                <div class="col-lg-8 col-lg-offset-2">
                     <br><br><br>
-                    <div class='pull-left control-group'>
+                    <div class='control-group'>
                         <h3>List</h3>
                     </div>
-                    <br><br>
                 </div>
             </div>
-            <div class="row" ng-show = "disp">
+            <div class="row" >
                 <div class="col-lg-8 col-lg-offset-2">
                     <form name="list" id="contactForm" novalidate="">
                         <div class="row control-group">
@@ -21,7 +21,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                     <button type="submit" class="btn btn-success btn-md" ng-click="getList(data.itemSelect)">Save</button>
+                                     <button type="submit" class="btn btn-success btn-md" ng-click="getList(data.itemSelect)">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -51,13 +51,18 @@
                     </form>
                 </div>
             </div>
-    
+        </div>
     <!-- /**************************************************************/ -->
-            </br>
-            </br>
-            </br>
-            </br>
-            <div class="col-lg-8 col-lg-offset-2" ng-hide = "disp">
+        <div ng-hide = "disp">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <br><br><br>
+                    <div class='control-group'>
+                        <h3>Edit</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-lg-offset-2">
                     <form name="bundlePaid" id="contactForm" novalidate="">
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
@@ -235,5 +240,6 @@
                         </div>
                     </form>
                 </div>
+        </div>
         </div>
     </section>

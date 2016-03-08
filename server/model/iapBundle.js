@@ -50,23 +50,32 @@ iapBundle.statics.getAlliap = function(callback) {
 };
 
 iapBundle.statics.getAlliapByType = function(type, callback) {
-    this.find({packType: type}, callback);
+    this.find({packType: type}).sort('levelStart').exec(callback);
 };
 
 iapBundle.statics.getiap = function(level, type, callback) {
     this.findOne({packType: type, levelStart: { $lte: level }, levelEnd: { $gte: level }}, callback);
 };
 
-iapBundle.statics.chekiapExistByLevelRange = function(type, levelStart, levelEnd, callback) {
-    this.find({packType: type,levelStart: { $lte: levelStart }, levelEnd: { $gte: levelEnd }}, callback);
+iapBundle.statics.chekiapExistByLevelRange = function(type, ulevelStart, ulevelEnd, callback) {
+  this.find({packType: type,$or:[{$and:[{levelStart: { $lte: ulevelStart}},{levelEnd: { $gte: ulevelStart}}]},
+    {$and:[{levelStart: { $lte: ulevelEnd}},{levelEnd: { $gte: ulevelEnd}}]}]}, callback);
+};
+
+iapBundle.statics.checkForRange = function(type, ulevelStart, ulevelEnd, callback) {
+  this.find({packType: type,$and: [{levelStart: { $gte: ulevelStart}},{levelEnd: { $lte: ulevelEnd}}]}, callback);
 };
 
 iapBundle.statics.createiap = function(requestObject, callback) {
     this.create(requestObject, callback);
 };
 
-iapBundle.statics.updateiapBundle = function(bundleId, reqObj, callback) {
-  this.update({_id: bundleId}, reqObj, callback);
+iapBundle.statics.getUpdateEntry = function(bundleId, callback) {
+  this.find({_id: bundleId}, callback);
+};
+
+iapBundle.statics.removeUpdateEntry = function(bundleId, callback) {
+  this.remove({_id: bundleId}, callback);
 };
 
 

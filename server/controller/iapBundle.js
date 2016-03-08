@@ -82,43 +82,116 @@ iapBundleController.getByLevelAndTime = function (req,res) {
    POST: /iapBundle
 */
 
+
 iapBundleController.createIapBundle = function (req,res) {
-		iapBundle.chekiapExistByLevelRange(req.body.packName, req.body.levelStart, req.body.levelEnd, function(err, result){
-      		if(err){
-            
-      			return res.json({status:false, info:"Oops something went wrong!!"});
-      		}
-      		else{
-      			if(result.length){
-      				console.log("duplicate level range found !!");
-      				return res.json({status:false, info:"duplicate level range found !!"});
-      			}
-      			else{      				
-			      	iapBundle.createiap(req.body, function(err, result){
-			      		if(err){
-                  console.log(err);
-			      			return res.json({status:false, info:"Oops something went wrong!!"});
-			      		}
-			      		else{
-			      			return res.json({status:true, result: result});
-			      		}
-			      	});
-      			}
-      		}
-      	});
+  iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+      if(err){
+        return res.json({status:false, info:"Oops something went wrong!!"});
+      }
+      else{
+        if(result.length){
+          return res.json({status:false, info:"duplicate level range found !!"});
+        }
+        else{    
+            iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+              if(err){
+                return res.json({status:false, info:"Oops something went wrong!!"});
+              } else{
+                  if(result.length){
+                    return res.json({status:false, info:"duplicate level range found !!"});
+                  }
+                  else{
+                   iapBundle.createiap(req.body, function(err, result){
+                    if(err){
+                      
+                      return res.json({status:false, info:"Oops something went wrong!!"});
+                    }
+                    else{
+                      return res.json({status:true, result: result});
+                    }
+                  });
+                }
+              }
+          });
+        }
+      }
+    });
 };
 
+
 iapBundleController.updateIapBundle = function (req,res) {
-    iapBundle.updateiapBundle(req.params.bundleId, req.body, function(err, result){
-        if(err){
+  iapBundle.getUpdateEntry(req.params.bundleId, function(err, result){
+       if(err){
+          console.log(err);
           return res.json({status:false, info:"Oops something went wrong!!"});
-        }
-        else{
-          return res.json({status:true, result:result});
+        } else{
+          var dupResult = result;
+          iapBundle.removeUpdateEntry(req.params.bundleId, function(err, result){
+             if(err){
+                console.log(err);
+                return res.json({status:false, info:"Oops something went wrong!!"});
+              } else{
+                iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+                  if(err){
+                    console.log(err);
+                    createnewRecord(dupResult, function(err, result){
+                      return res.json({status:false, info:"Oops something went wrong!!"});
+                    });
+                  }
+                  else{
+                    if(result.length){
+                      createnewRecord(dupResult, function(err, result){
+                        return res.json({status:false, info:"duplicate level range found !!"});
+                      });
+                    }
+                    else{    
+                        iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+                          if(err){
+                            console.log(err);
+                           createnewRecord(dupResult, function(err, result){
+                              return res.json({status:false, info:"Oops something went wrong!!"});
+                            });
+                          } else{
+                              if(result.length){
+                               createnewRecord(dupResult, function(err, result){
+                                  return res.json({status:false, info:"duplicate level range found !!"});
+                                });
+                              }
+                              else{
+                                 iapBundle.createiap(req.body, function(err, result){
+                                if(err){
+                                  console.log(err);
+                                  return res.json({status:false, info:"Oops something went wrong!!"});
+                                }
+                                else{
+                                  return res.json({status:true, result: result});
+                                }
+                              });
+                            }
+                          }
+                      });
+                    }
+                  }
+                });
+              }
+          });
         }
     });
 };
 
+function createnewRecord(data, callback){
+  data._id = undefined;
+  iapBundle.createiap(data, function(err, result){
+    if(err){
+        console.log(err);
+        callback(err);
+      }
+      else{
+        callback(null, result);
+      }
+    });
+
+}
 
 
 module.exports = iapBundleController;
