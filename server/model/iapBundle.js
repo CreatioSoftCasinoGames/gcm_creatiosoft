@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-   var  ObjectId = Schema.ObjectId;
 
 var iapBundle = new Schema({
 
@@ -78,5 +77,8 @@ iapBundle.statics.removeUpdateEntry = function(bundleId, callback) {
   this.remove({_id: bundleId}, callback);
 };
 
+iapBundle.statics.removeEntry = function(callback){
+  this.remove();
+}
 
 mongoose.model('iapBundle', iapBundle);

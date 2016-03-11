@@ -3,6 +3,8 @@
 var Mongoose = require('mongoose'); 
 var config = require('./config');
 
+console.log("----------------------------------------");
+
 Mongoose.connect('mongodb://' + config.database.host + '/' + config.database.db);  
 var db = Mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));  

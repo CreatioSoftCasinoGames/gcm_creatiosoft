@@ -84,99 +84,126 @@ iapBundleController.getByLevelAndTime = function (req,res) {
 
 
 iapBundleController.createIapBundle = function (req,res) {
-  iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
-      if(err){
-        return res.json({status:false, info:"Oops something went wrong!!"});
-      }
-      else{
-        if(result.length){
-          return res.json({status:false, info:"duplicate level range found !!"});
-        }
-        else{    
-            iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
-              if(err){
-                return res.json({status:false, info:"Oops something went wrong!!"});
-              } else{
-                  if(result.length){
-                    return res.json({status:false, info:"duplicate level range found !!"});
+  if(!!req.body.packType && !!req.body.levelStart && !!req.body.levelEnd && !!req.body.packName && !!req.body.originalPrice && !!req.body.newPrice && !!req.body.skuId && !!req.body.dealStartDateTime && !!req.body.dealEndDateTime && !!req.body.purchaseLimit && !!req.body.discountPercent && !!req.body.items){
+
+    if(req.body.levelStart <= req.body.levelEnd){
+      if(req.body.dealStartDateTime < req.body.dealEndDateTime){
+          iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+          if(err){
+            return res.json({status:false, info:"Oops something went wrong!!"});
+          }
+          else{
+            if(result.length){
+              return res.json({status:false, info:"duplicate level range found !!"});
+            }
+            else{    
+                iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+                  if(err){
+                    return res.json({status:false, info:"Oops something went wrong!!"});
+                  } else{
+                      if(result.length){
+                        return res.json({status:false, info:"duplicate level range found !!"});
+                      }
+                      else{
+                       iapBundle.createiap(req.body, function(err, result){
+                        if(err){
+                          
+                          return res.json({status:false, info:"Oops something went wrong!!"});
+                        }
+                        else{
+                          return res.json({status:true, result: result});
+                        }
+                      });
+                    }
                   }
-                  else{
-                   iapBundle.createiap(req.body, function(err, result){
-                    if(err){
-                      
-                      return res.json({status:false, info:"Oops something went wrong!!"});
-                    }
-                    else{
-                      return res.json({status:true, result: result});
-                    }
-                  });
-                }
-              }
-          });
-        }
+              });
+            }
+          }
+        });
+      } else {
+        return res.json({status:false, info:"Deal Start Date Time should be smaller than Deal End Date Time"});  
       }
-    });
+    }
+    else{
+      return res.json({status:false, info:"Level Start should be smaller or equal to Level End"});
+    }
+  } else {
+    return res.json({status:false, info:"Insufficient Data !!"});
+  }
 };
 
 
 iapBundleController.updateIapBundle = function (req,res) {
-  iapBundle.getUpdateEntry(req.params.bundleId, function(err, result){
-       if(err){
-          console.log(err);
-          return res.json({status:false, info:"Oops something went wrong!!"});
-        } else{
-          var dupResult = result;
-          iapBundle.removeUpdateEntry(req.params.bundleId, function(err, result){
-             if(err){
-                console.log(err);
-                return res.json({status:false, info:"Oops something went wrong!!"});
-              } else{
-                iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
-                  if(err){
+   if(!!req.body.packType && !!req.body.levelStart && !!req.body.levelEnd && !!req.body.packName && !!req.body.originalPrice && !!req.body.newPrice && !!req.body.skuId && !!req.body.dealStartDateTime && !!req.body.dealEndDateTime && !!req.body.purchaseLimit && !!req.body.discountPercent && !!req.body.items){
+     if(req.body.levelStart <= req.body.levelEnd){
+      if(req.body.dealStartDateTime < req.body.dealEndDateTime){
+        iapBundle.getUpdateEntry(req.params.bundleId, function(err, result){
+           if(err){
+              console.log(err);
+              return res.json({status:false, info:"Oops something went wrong!!"});
+            } else{
+              var dupResult = result;
+              iapBundle.removeUpdateEntry(req.params.bundleId, function(err, result){
+                 if(err){
                     console.log(err);
-                    createnewRecord(dupResult, function(err, result){
-                      return res.json({status:false, info:"Oops something went wrong!!"});
+                    return res.json({status:false, info:"Oops something went wrong!!"});
+                  } else{
+                    iapBundle.chekiapExistByLevelRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+                      if(err){
+                        console.log(err);
+                        createnewRecord(dupResult, function(err, result){
+                          return res.json({status:false, info:"Oops something went wrong!!"});
+                        });
+                      }
+                      else{
+                        if(result.length){
+                          createnewRecord(dupResult, function(err, result){
+                            return res.json({status:false, info:"duplicate level range found !!"});
+                          });
+                        }
+                        else{    
+                            iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
+                              if(err){
+                                console.log(err);
+                               createnewRecord(dupResult, function(err, result){
+                                  return res.json({status:false, info:"Oops something went wrong!!"});
+                                });
+                              } else{
+                                  if(result.length){
+                                   createnewRecord(dupResult, function(err, result){
+                                      return res.json({status:false, info:"duplicate level range found !!"});
+                                    });
+                                  }
+                                  else{
+                                     iapBundle.createiap(req.body, function(err, result){
+                                    if(err){
+                                      console.log(err);
+                                      return res.json({status:false, info:"Oops something went wrong!!"});
+                                    }
+                                    else{
+                                      return res.json({status:true, result: result});
+                                    }
+                                  });
+                                }
+                              }
+                          });
+                        }
+                      }
                     });
                   }
-                  else{
-                    if(result.length){
-                      createnewRecord(dupResult, function(err, result){
-                        return res.json({status:false, info:"duplicate level range found !!"});
-                      });
-                    }
-                    else{    
-                        iapBundle.checkForRange(req.body.packType, req.body.levelStart, req.body.levelEnd, function(err, result){
-                          if(err){
-                            console.log(err);
-                           createnewRecord(dupResult, function(err, result){
-                              return res.json({status:false, info:"Oops something went wrong!!"});
-                            });
-                          } else{
-                              if(result.length){
-                               createnewRecord(dupResult, function(err, result){
-                                  return res.json({status:false, info:"duplicate level range found !!"});
-                                });
-                              }
-                              else{
-                                 iapBundle.createiap(req.body, function(err, result){
-                                if(err){
-                                  console.log(err);
-                                  return res.json({status:false, info:"Oops something went wrong!!"});
-                                }
-                                else{
-                                  return res.json({status:true, result: result});
-                                }
-                              });
-                            }
-                          }
-                      });
-                    }
-                  }
-                });
-              }
+              });
+            }
           });
-        }
-    });
+        } else {
+         return res.json({status:false, info:"Deal Start Date Time should be smaller than Deal End Date Time"});  
+      } 
+    }else{
+       return res.json({status:false, info:"Level Start should be smaller or equal to Level End"});
+    }
+  }
+  else {
+    return res.json({status:false, info:"Insufficient Data !!"});
+  }
 };
 
 function createnewRecord(data, callback){
