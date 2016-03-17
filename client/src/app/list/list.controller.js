@@ -1,4 +1,4 @@
-
+// > Description : Init function will initialize the scope variable objects whenever page is loaded or called from another function.
 
 Classified.controller('ListController', ['$scope', '$http','$rootScope', function($scope, $http,$rootScope) {
 	 $scope.init = function(){
@@ -41,9 +41,14 @@ Classified.controller('ListController', ['$scope', '$http','$rootScope', functio
 
     }
 
+// > Description : Back function will return the control from edit page to list page. Where Edit page is that in which updation can made for bundled user(paid or unpaid) and List page is that where all the details of bundle user(paid or unpaid) is shown.
+
     $scope.back = function(){
         $scope.disp = true;
     }
+
+
+// > Description : Get list function will hit the api(/iapBundle/:type) to get the details of bundled users(paid or unpaid) according to the type selected. Where type can be paid or unpaid and handled the result accordingly to display the details.
 
     $scope.getList = function(itemSelect){
         if(!!itemSelect){
@@ -66,12 +71,14 @@ Classified.controller('ListController', ['$scope', '$http','$rootScope', functio
         }
     }
 
-  
-    $scope.formateDate = function(da){
-        return (new Date(da).toLocaleString());
+  // > Description : Formate date dunction is used to format the date from timestamp to m/d/y, hr.min.sec a.m/p.m format.
 
+      $scope.formateDate = function(da){
+        return (new Date(da).toLocaleString());
     }
 
+
+// > Description : Edit function will move the control from list page to edit page and give options to make updation in the selected bundled user(paid or unpaid) details like start level, end level, packname, skuId, price, deal time, purchase limit, coupons and their values etc...
     $scope.edit = function(localList){
         $scope.disp = false;
         $scope.data.packType = localList.packType;
@@ -99,6 +106,9 @@ Classified.controller('ListController', ['$scope', '$http','$rootScope', functio
         }
         $scope.data.item = itemEntry;
     }
+
+
+    // > Description : Update function received all the modification of bundled user(paid or unpaid) like start level, end level, packname, skuId, price, deal time, purchase limit, coupons and their values etc.. and hit api (/iapBundle/update/bundleId) which update the modified data for the same in database after checking all the validation for level, date and time like start level should not be greater than end level and same for the date-time and then handled the result accordingly.
 
     $scope.update = function(bundleId){
         if(!!$scope.data.packType && !!$scope.data.levelStart && !!$scope.data.levelEnd && !!$scope.data.packName && !!$scope.data.originalPrice && !!$scope.data.newPrice && !!$scope.data.skuId && !!$scope.data.dealStartDateTime && !!$scope.data.dealEndDateTime && !!$scope.data.purchaseLimit && !!$scope.data.discountPercent && !!$scope.data.item){

@@ -13,7 +13,6 @@ module.exports = function(app){
        	.get(bingoAdd.getByType);
 
     app.route('/iapBundle')
-    	.get(iapBundle.getAlliap)
        	.post(iapBundle.createIapBundle);
 
     app.route('/iapBundle/:type')

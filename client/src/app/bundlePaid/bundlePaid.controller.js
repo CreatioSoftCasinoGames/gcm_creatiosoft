@@ -1,4 +1,4 @@
-
+// > Description : Init function will initialize the scope variable objects whenever page is loaded or called from another function.
 
 Classified.controller('BundlePaidController', ['$scope', '$http','$rootScope', function($scope, $http,$rootScope) {
 	 $scope.init = function(){
@@ -30,6 +30,8 @@ Classified.controller('BundlePaidController', ['$scope', '$http','$rootScope', f
         }];
     }
 
+
+// > Description : Here Create function received all the details of bundled paid user like start level, end level, packname, skuId, price, deal time, purchase limit, coupons and their values etc.. and hit api (/iapBundle/paid) which save the data for same after checking all the validation for level, date and time like start level should not be greater than end level and same for the date-time and then handled the result accordingly.
     $scope.create = function(){
        
         if(!!$scope.data.packType && !!$scope.data.levelStart && !!$scope.data.levelEnd && !!$scope.data.packName && !!$scope.data.originalPrice && !!$scope.data.newPrice && !!$scope.data.skuId && !!$scope.data.dealStartDateTime && !!$scope.data.dealEndDateTime && !!$scope.data.purchaseLimit && !!$scope.data.discountPercent && !!$scope.data.item1 && !!$scope.data.item2 && !!$scope.data.item3 && !!$scope.data.item1value && !!$scope.data.item2value && !!$scope.data.item3value){

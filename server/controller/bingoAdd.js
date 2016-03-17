@@ -5,11 +5,19 @@ var mongoose = require('mongoose'),
 
 var bingoAddController = {};
 
-/**
-   GET: /bingoAdd/:paidType
 
-   :paidType -> unpaid OR paid
- */
+// ##  Get Detail of Paid or Unpaid User
+
+// > GET : /bingoAdd/:paidType
+// > paidType : Paid or Unpaid
+
+// > Output : Get details of user.
+
+// > User Type : Paid users or Unpaid users.
+
+// > Description : Here we will get lobby add and bonus detail of user(paid or unpaid).
+
+
 
 bingoAddController.getByType = function (req,res) {
     if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){
@@ -43,11 +51,18 @@ bingoAddController.getByType = function (req,res) {
 };
 
 
-/**
-   POST: /bingoAdd/:paidType
 
-   :paidType -> unpaid OR paid
- */
+// ## Save detail of Paid or Unpaid User
+
+// > POST : /bingoAdd/:paidType
+// > paidType : Paid or Unpaid
+
+// > Output : Save details of user.
+
+// > User Type : Paid users or Unpaid users.
+
+// > Description : Here we save lobby add and daily bonus details of user(paid or unpaid).
+
 
 bingoAddController.create = function (req,res) {
   if(req.params.paidType == 'paid' || req.params.paidType == 'unpaid'){

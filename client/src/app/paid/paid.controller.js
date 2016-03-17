@@ -1,4 +1,5 @@
 
+// > Description : Init function will initialize the scope variable objects whenever page is loaded or called from another function. Also it display the previously saved data for paid user. 
 
 Classified.controller('PaidController', ['$scope', '$http','$rootScope', function($scope, $http,$rootScope) {
 	 $scope.init = function(){
@@ -51,6 +52,9 @@ Classified.controller('PaidController', ['$scope', '$http','$rootScope', functio
   
         });
     }
+
+
+// > Description : Here Create function received all the details from paid user like lobby add and daily bonus details and hit api (/bingoAdd/paid) which save the data for the same and then handled the result accordingly.
 
     $scope.create = function(){
         if(!!$scope.data.lobbyAdd.level && !!$scope.data.lobbyAdd.cap && !!$scope.data.lobbyAdd.type && !!$scope.data.lobbyAdd.value && !!$scope.data.dailyBonus.level && !!$scope.data.dailyBonus.type && !!$scope.data.dailyBonus.value){
