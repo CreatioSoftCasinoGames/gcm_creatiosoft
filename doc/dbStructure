@@ -1,0 +1,459 @@
+
+CREATE SCHEMA `moralDilemma` ;
+
+Questions
+============
+
+CREATE TABLE moralDilemma.questions
+(
+Question_Id int NOT NULL AUTO_INCREMENT,
+Question_String varchar(255) NOT NULL,
+Level int NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Question_Id)
+);
+
+INSERT INTO moralDilemma.questions (Question_String, Level, Created_On, Updated_On) VALUES ("How would you allocate the winnings from this towards the following 4 options. Note that you have only the options as given below -",1, 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.questions (Question_String, Level, Created_On, Updated_On) VALUES ("What would you do? You have the following options -",2, 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.questions (Question_String, Level, Created_On, Updated_On) VALUES ("What would you do? You have the following options -",3, 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.questions (Question_String, Level, Created_On, Updated_On) VALUES ("What would you do? You have the following options -",4, 1458125792505, 1458125792505);
+
+Options
+=========
+
+CREATE TABLE moralDilemma.options
+(
+Option_Id int NOT NULL AUTO_INCREMENT,
+Question_Id int NOT NULL,
+Level int NOT NULL,
+Option_String varchar(255) NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Option_Id),
+FOREIGN KEY (Question_Id) REFERENCES questions(Question_Id)
+);
+
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (1,1, "A car", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (1,1, "Vacation", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (1,1, "Daughter’s wedding", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (1,1, "Starting a business for your son", 1458125792505, 1458125792505);
+
+
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (2,2, "Meet him and agree to give him the full amount", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (2,2, "Meet him to agree that you will give him 50% i.e. Rs 50 lakhs", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (2,2, "Meet him and agree to give him Rs 10 lakhs for his mother’s treatment", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (2,2, "Meet him to tell him that this is finders keeper - since you found the ticket it was your luck that brought in the fortune.", 1458125792505, 1458125792505);
+
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (3,3, "agree to give him the full amount", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (3,3, "agree that you will give him 50% i.e. Rs 50 lakhs", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (3,3, "agree to give him Rs 10 lakhs for his mother’s treatment", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (3,3, "tell him that this is finders keeper - since you found the ticket it was your luck that brought in the fortune.", 1458125792505, 1458125792505);
+
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (4,4, "agree to give him the full amount", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (4,4, "agree that you will give him 50% i.e. Rs 50 lakhs", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (4,4, "agree to give him Rs 10 lakhs for his mother’s treatment", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.options (Question_Id, Level, Option_String, Created_On, Updated_On) VALUES (4,4, "tell him that this is finders keeper - since you found the ticket it was your luck that brought in the fortune.", 1458125792505, 1458125792505);
+
+SELECT options.Question_Id, options.Option_Id, options.Level,  options.Option_String, questions.Question_String
+FROM options
+INNER JOIN questions
+ON options.Question_Id=questions.Question_Id WHERE options.Level = 1;
+
+Users
+=======
+CREATE TABLE moralDilemma.users
+(
+User_Id int NOT NULL AUTO_INCREMENT,
+User_Name varchar(255) NOT NULL,
+Unique_User_Id varchar(200) UNIQUE,
+User_Type varchar(20),
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (User_Id)
+);   
+
+INSERT INTO moralDilemma.users (User_Name, Unique_User_Id, Created_On, Updated_On) VALUES ("gaurav","us1", "facebook", 124564, 464348);
+
+Answers
+=========
+CREATE TABLE moralDilemma.answers
+(
+Answer_Id int NOT NULL AUTO_INCREMENT,
+User_Id int NOT NULL,
+Round_Id varchar(20) NOT NULL,
+Question_Id int NOT NULL,
+Option_Id int NOT NULL,
+Option_Value varchar(20) NOT NULL,
+Is_Final BIT NOT NULL,
+Time_Spend int NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Answer_Id),
+FOREIGN KEY (Question_Id) REFERENCES questions(Question_Id),
+FOREIGN KEY (Option_Id) REFERENCES options(Option_Id),
+FOREIGN KEY (User_Id) REFERENCES users(User_Id)
+);
+
+INSERT INTO moralDilemma.answers (User_Id, Round_Id, Question_Id, Option_Id, Option_Value, Is_Final, Time_Spend, Created_On, Updated_On) values (1, "rd1", 1, 1, "value1", 0, 2000, 176577, 566755), (1, "rd1", 1, 2, "value2", 0, 2000, 176577, 566755), 
+(1, "rd1", 1, 3, "value3", 0, 2000, 176577, 566755), (1, "rd1", 1, 4, "value4", 0, 2000, 176577, 566755);
+
+IncompleteAnswer
+================
+
+CREATE TABLE moralDilemma.incompleteAnswers
+(
+Incomplete_Id int NOT NULL AUTO_INCREMENT,
+User_Id int NOT NULL,
+Round_Id varchar(20) NOT NULL,
+Question_Id int NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Incomplete_Id),
+FOREIGN KEY (Question_Id) REFERENCES questions(Question_Id),
+FOREIGN KEY (User_Id) REFERENCES users(User_Id)
+);
+
+INSERT INTO moralDilemma.incompleteAnswers (User_Id, Round_Id, Question_Id, Created_On, Updated_On) VALUES (1, "rd1", 1, 124564, 464348);
+
+Logs
+========
+CREATE TABLE moralDilemma.logs
+(
+Log_Id int NOT NULL AUTO_INCREMENT,
+User_Id int NOT NULL,
+Round_Id varchar(20) NOT NULL,
+Log_Type varchar(20) NOT NULL,
+Comment varchar(40),
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Log_Id),
+FOREIGN KEY (User_Id) REFERENCES users(User_Id)
+);
+
+INSERT INTO moralDilemma.logs (User_Id, Round_Id, Log_Type, Comment, Created_On, Updated_On) VALUES (1, "rd1", "Replay", "Level 1", 124564, 464348);
+
+LoadingTime
+=============
+CREATE TABLE moralDilemma.loadingtime
+(
+Loading_Id int NOT NULL AUTO_INCREMENT,
+User_Id int,
+Round_Id varchar(20),
+Time_Taken int NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Loading_Id)
+);
+
+INSERT INTO moralDilemma.loadingtime (User_Id, Round_Id, Created_On, Updated_On) VALUES (1, "rd1", "Submit", 124564, 464348);
+
+Screens
+============
+
+CREATE TABLE moralDilemma.screens
+(
+Screen_Id int NOT NULL AUTO_INCREMENT,
+Screen_Name varchar(255) NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Screen_Id)
+);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Welcome", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Level 1", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Lever 2", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Level 3", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Lever 4", 1458125792505, 1458125792505);
+
+INSERT INTO moralDilemma.screens (Screen_Name, Created_On, Updated_On) VALUES ("Thank You", 1458125792505, 1458125792505);
+
+ScreenRecord
+================
+
+CREATE TABLE moralDilemma.screensRecord
+(
+Screen_Record_Id int NOT NULL AUTO_INCREMENT,
+User_Id int NOT NULL,
+Round_Id varchar(20) NOT NULL,
+Screen_Id int NOT NULL,
+Time_Spend int NOT NULL,
+Created_On int NOT NULL,
+Updated_On int NOT NULL,
+PRIMARY KEY (Screen_Record_Id),
+FOREIGN KEY (Screen_Id) REFERENCES screens(Screen_Id)
+);
+
+INSERT INTO moralDilemma.screensRecord (User_Id, Round_Id, Screen_Id, Time_Spend, Created_On, Updated_On) VALUES (1,"rd1",1, 500, 124564, 464348);
+
+
+Question -
+    Question_Id -
+    Question_String -
+    Level -
+    Created_On -
+    Updated_On -
+
+Options -
+    Option_Id
+    Question_Id -
+    Level -
+    Option_String -
+    Created_On -
+    Updated_On -
+
+User -
+    User_Id -
+    User_Name -
+    Unique_User_Id -
+    Created_On -
+    Updated_On -    
+
+Answers -
+    Answer_Id -
+    User_Id -
+    Round_Id -
+    Question_Id -
+    Option_Id -
+    Option_Value -
+    Is_Final -
+    Time_Spend -
+    Created_On -
+    Updated_On -
+
+IncompleteInfo
+    Incomplete_Id -
+    User_Id -
+    Round_Id -
+    Question_Id -
+    Created_On -
+    Updated_On -
+
+Log -
+    Log_Id -
+    User_Id -
+    Round_Id -
+    Log_Type - "Submit", "Replay",
+    Created_On -
+    Updated_On -
+
+LoadingTime-
+    Loading_Id -
+    User_Id -
+    Round_Id -
+    Created_On -
+    Updated_On -
+    Time_Taken -
+
+Screen -
+    Screen_Id -
+    Screen_Name -
+    Created_On -
+    Updated_On -
+
+ScreenRecord -
+    Screen_Record_Id -
+    Round_Id -
+    User_Id -
+    Screen_Id -
+    Time_Spend -
+    Created_On -
+    Updated_On -
+
+
+
+API's
+========
+
+1. Register User on successfull login
+
+    POST: http://localhost:8000/registerUser
+
+    Body:
+
+        {
+            "User_Name": "g1",
+            "Unique_User_Id": "gk4",
+            "User_Type": "facebook"
+        }
+    Desired Response:
+
+    {
+        "status": true,
+        "result": {
+            "User_Id": 6,
+            "Round_Id": "def786b0-eaa7-11e5-8403-d55abbc89005"
+        }
+    }
+
+2. To get question and options to be shown on each level.
+
+    GET: http://localhost:8000/questions?level=1
+
+    Desired Response:
+
+    {
+        "status": true,
+        "result": [{
+            "Question_Id": 1,
+            "Option_Id": 1,
+            "Level": 1,
+            "Option_String": "option String1",
+            "Question_String": "Questins1"
+        }, {
+            "Question_Id": 1,
+            "Option_Id": 2,
+            "Level": 1,
+            "Option_String": "option String2",
+            "Question_String": "Questins1"
+        }, {
+            "Question_Id": 1,
+            "Option_Id": 3,
+            "Level": 1,
+            "Option_String": "option String3",
+            "Question_String": "Questins1"
+        }, {
+            "Question_Id": 1,
+            "Option_Id": 4,
+            "Level": 1,
+            "Option_String": "option String4",
+            "Question_String": "Questins1"
+        }]
+    }
+
+3.  Register Answer
+
+    POST: http://localhost:8000/registerAnswers
+
+    Body:
+
+        [{
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Question_Id": 1,
+            "Option_Id": 1,
+            "Option_Value": "value1",
+            "Is_Final": 0,
+            "Time_Spend": 500
+        }, {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Question_Id": 1,
+            "Option_Id": 2,
+            "Option_Value": "value2",
+            "Is_Final": 0,
+            "Time_Spend": 500
+        }, {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Question_Id": 1,
+            "Option_Id": 3,
+            "Option_Value": "value3",
+            "Is_Final": 0,
+            "Time_Spend": 500
+        }, {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Question_Id": 1,
+            "Option_Id": 4,
+            "Option_Value": "value4",
+            "Is_Final": 0,
+            "Time_Spend": 500
+        }]
+
+4. Register Incomplete Answer
+
+    POST: http://localhost:8000/registerIncompleteAnswer
+
+    Body:
+
+        {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Question_Id": 1
+        }
+
+5. Register Log
+
+    POST: http://localhost:8000/registerLog
+
+    Body:
+
+        {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Log_Type": "Replay",
+            "Comment": "Level 1"
+        }
+
+6. Register Loading Time
+
+    POST: http://localhost:8000/registerLoadingTime
+
+    Body:
+
+        {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Time_Taken": 300
+        }
+
+7. Get Screen Event List
+
+    GET: http://localhost:8000/getScreenEvent
+
+    Response:
+
+        {
+            "status": true,
+            "result": [
+            {
+                "Screen_Id": 1,
+                "Screen_Name": "Screen1",
+                "Created_On": 124564,
+                "Updated_On": 464348
+            },
+            {
+                "Screen_Id": 2,
+                "Screen_Name": "Screen2",
+                "Created_On": 124564,
+                "Updated_On": 464348
+            }]
+        }
+
+8. Record Screen Time
+
+    POST: http://localhost:8000/recordScreen
+
+    Body:
+
+        {
+            "User_Id": 1,
+            "Round_Id": "rd1",
+            "Screen_Id": 1,
+            "Time_Spend": 300
+        } 
+

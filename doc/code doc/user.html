@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Moral Dilemma Controller</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          
+          
+            <div class='highlight'><pre><span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-comment">/**
+ * Created by gaurav on 15/1/16.
+ */</span></pre></div>
+          
+        
+
+        
+      </div>
+
+      
+        
+        <h1 id="moral-dilemma-controller">Moral Dilemma Controller</h1>
+<h2 id="user-js">user.js</h2>
+<h2 id="path-server-controller-user-js">path: server/controller/user.js</h2>
+
+        
+          <div class='highlight'><pre>
+<span class="hljs-keyword">var</span> connection = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../config/db'</span>).connection,
+    databaseName = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../config/config'</span>).database.database,
+    uuid = <span class="hljs-built_in">require</span>(<span class="hljs-string">'uuid'</span>);</pre></div>
+        
+      
+        
+        <h2 id="get-question-list-to-be-shown-on-game-based-on-level">Get Question List to be shown on game based on level</h2>
+
+        
+      
+        
+        <blockquote>
+<p>GET : /questions?level=1</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Question List to be shown on game based on level</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.getQuestionList = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for getQuestionList : Level --&gt; "</span> + req.query.level);
+    <span class="hljs-keyword">var</span> level = req.query.level;
+
+    <span class="hljs-keyword">if</span>(!level) res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    <span class="hljs-keyword">else</span>{
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT options.Question_Id, options.Option_Id, options.Level,  options.Option_String, questions.Question_String"</span>+
+                    <span class="hljs-string">" FROM options INNER JOIN questions "</span>+
+                    <span class="hljs-string">"ON options.Question_Id=questions.Question_Id WHERE options.Level = "</span>+level;
+
+        connection.query(query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-built_in">console</span>.log(err);
+                res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Opps something went wrong !!"</span>});
+            } <span class="hljs-keyword">else</span> {
+                res.json({status:<span class="hljs-literal">true</span>, result:result});
+            }
+
+        });
+    }
+};</pre></div>
+        
+      
+        
+        <h2 id="register-new-user">Register new user</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /registerUser</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body : User_Name, Unique_User_Id, User_Type</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: User_Id, Round_Id</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: There will be 2 case:</p>
+<ol>
+<li>When new user first time sign in -&gt; will create a new user in our db with above fields which we get from facebook and google sign in and will return User_Id and Round_Id</li>
+<li>When existing user starts new game -&gt; will not create new user in db but will provide/return new Round_Id with existing User_Id</li>
+</ol>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.registerUser = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for registerUser: "</span> + <span class="hljs-built_in">JSON</span>.stringify(req.body));
+    <span class="hljs-keyword">if</span>(!!req.body.User_Name &amp;&amp; !!req.body.Unique_User_Id &amp;&amp; !!req.body.User_Type) {
+
+        req.body.Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+        req.body.Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT * FROM moralDilemma.users "</span> +
+            <span class="hljs-string">"WHERE Unique_User_Id='"</span> + req.body.Unique_User_Id+<span class="hljs-string">"'"</span>;
+
+        connection.query(query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-built_in">console</span>.log(err);
+                res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Opps something went wrong !!"</span>});
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">if</span>(result.length){
+                    <span class="hljs-keyword">var</span> obj = {
+                        User_Id : result[<span class="hljs-number">0</span>].User_Id,
+                        Round_Id: uuid.v1()
+                    }
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Response of registerUser"</span>+ <span class="hljs-built_in">JSON</span>.stringify(obj));
+                    res.json({status:<span class="hljs-literal">true</span>, result: obj});
+                }
+                <span class="hljs-keyword">else</span>{
+                    <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.users (User_Name, Unique_User_Id, User_Type, Created_On, Updated_On) VALUES (?,?,?,?,?)"</span>;
+
+                    <span class="hljs-keyword">var</span> values = [req.body.User_Name, req.body.Unique_User_Id, req.body.User_Type, req.body.Created_On, req.body.Updated_On];
+
+                    connection.query(query, values, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+                        <span class="hljs-keyword">var</span> obj = {
+                            User_Id : result.insertId,
+                            Round_Id: uuid.v1()
+                        }
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Response of registerUser"</span>+ <span class="hljs-built_in">JSON</span>.stringify(obj));
+                        res.json({status:<span class="hljs-literal">true</span>, result: obj});
+                    });
+                }
+            }
+
+        });
+        
+    } <span class="hljs-keyword">else</span>{
+        res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    }
+};</pre></div>
+        
+      
+        
+        <h2 id="register-answer">Register Answer</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /registerAnswers</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body : array of 4 object(option) having User_Id, Round_Id, Question_Id, Option_Id, Option_Value, Is_Final, Time_Spend</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Successfull Response</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Is_Final key will be 0 from client end if not final answer and 1 if final answer</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.registerAnswers = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for registerAnswers: "</span> + <span class="hljs-built_in">JSON</span>.stringify(req.body));
+    <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.answers (User_Id, Round_Id, Question_Id, Option_Id, Option_Value, Is_Final, Time_Spend, Created_On, Updated_On) values "</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i =<span class="hljs-number">0</span>; i&lt;req.body.length; i++){  
+        <span class="hljs-keyword">if</span>(!!req.body[i].User_Id &amp;&amp; !!req.body[i].Round_Id &amp;&amp; !!req.body[i].Question_Id &amp;&amp; !!req.body[i].Option_Id &amp;&amp; !!req.body[i].Option_Value  &amp;&amp; !!req.body[i].Time_Spend ) {
+
+            req.body[i].Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+            req.body[i].Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+           
+           <span class="hljs-keyword">var</span> localValue = <span class="hljs-string">"("</span>+req.body[i].User_Id+<span class="hljs-string">",'"</span>+req.body[i].Round_Id+<span class="hljs-string">"',"</span>+req.body[i].Question_Id+<span class="hljs-string">","</span>+req.body[i].Option_Id+<span class="hljs-string">",'"</span>+req.body[i].Option_Value+<span class="hljs-string">"',"</span>+req.body[i].Is_Final+<span class="hljs-string">","</span>+req.body[i].Time_Spend+<span class="hljs-string">","</span>+req.body[i].Created_On+<span class="hljs-string">","</span>+ req.body[i].Updated_On+<span class="hljs-string">")"</span>;
+
+            <span class="hljs-keyword">if</span>(i!= req.body.length<span class="hljs-number">-1</span>)
+                localValue = localValue+<span class="hljs-string">", "</span>;
+            <span class="hljs-keyword">else</span>
+                localValue = localValue+<span class="hljs-string">";"</span>
+
+            query = query+localValue;
+
+            
+        } <span class="hljs-keyword">else</span>{
+            <span class="hljs-built_in">console</span>.log(query);
+            <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+        }
+    }
+    connection.query(query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) {
+            <span class="hljs-built_in">console</span>.log(err);
+            res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Opps something went wrong !!"</span>});
+        } <span class="hljs-keyword">else</span> {
+            res.json({status:<span class="hljs-literal">true</span>, result:result});
+        }
+    });
+};</pre></div>
+        
+      
+        
+        <h2 id="register-incomplete-answer-event">Register Incomplete Answer Event</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /registerIncompleteAnswer</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body : User_Id, Round_Id, Question_Id</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Successfull Response</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Will register each attempt for answer submittion which are incomplete/incorrect </p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.registerIncompleteAnswer = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for registerIncompleteAnswer: "</span> + <span class="hljs-built_in">JSON</span>.stringify(req.body));
+
+    <span class="hljs-keyword">if</span>(!!req.body.User_Id &amp;&amp; !!req.body.Round_Id &amp;&amp; !!req.body.Question_Id) {
+
+        req.body.Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+        req.body.Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.incompleteAnswers (User_Id, Round_Id, Question_Id, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?)"</span>;
+
+        <span class="hljs-keyword">var</span> values = [req.body.User_Id, req.body.Round_Id, req.body.Question_Id, req.body.Created_On, req.body.Updated_On];
+
+        connection.query(query, values, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            res.json({status:<span class="hljs-literal">true</span>, result: result});
+        });            
+    } <span class="hljs-keyword">else</span>{
+        <span class="hljs-built_in">console</span>.log(query);
+        <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    }
+};</pre></div>
+        
+      
+        
+        <h2 id="register-log">Register Log</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /registerLog</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body : User_Id, Round_Id, Log_Type</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Successfull Response</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Will register log/event for every User_Id and Round_Id </p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.registerLog = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for registerLog: "</span> + <span class="hljs-built_in">JSON</span>.stringify(req.body));
+
+    <span class="hljs-keyword">if</span>(!!req.body.User_Id &amp;&amp; !!req.body.Round_Id &amp;&amp; !!req.body.Log_Type) {
+
+        req.body.Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+        req.body.Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+
+        <span class="hljs-keyword">var</span> comment = !!req.body.Comment ? req.body.Comment : <span class="hljs-string">"No Comment"</span>;
+
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.logs (User_Id, Round_Id, Log_Type, Comment, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?, ?)"</span>;
+
+        <span class="hljs-keyword">var</span> values = [req.body.User_Id, req.body.Round_Id, req.body.Log_Type, comment, req.body.Created_On, req.body.Updated_On];
+
+        connection.query(query, values, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            res.json({status:<span class="hljs-literal">true</span>, result: result});
+        });            
+    } <span class="hljs-keyword">else</span>{
+        <span class="hljs-built_in">console</span>.log(query);
+        <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    }
+};</pre></div>
+        
+      
+        
+        <h2 id="register-app-loading-time">Register App Loading Time</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /registerLoadingTime</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body : User_Id, Round_Id, Time_Taken</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Successfull Response</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Will log app loading time. Here User_Id and Round_Id are optional</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.registerLoadingTime = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for registerLoadingTime: "</span> + <span class="hljs-built_in">JSON</span>.stringify(req.body));
+    <span class="hljs-keyword">if</span>(!!req.body.Time_Taken) {
+        req.body.Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+        req.body.Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.loadingtime (User_Id, Round_Id, Time_Taken, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?)"</span>;
+
+        <span class="hljs-keyword">var</span> values = [req.body.User_Id, req.body.Round_Id, req.body.Time_Taken, req.body.Created_On, req.body.Updated_On];
+
+        connection.query(query, values, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            res.json({status:<span class="hljs-literal">true</span>, result: result});
+        });            
+    } <span class="hljs-keyword">else</span>{
+        <span class="hljs-built_in">console</span>.log(query);
+        <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    }
+
+};</pre></div>
+        
+      
+        
+        <h2 id="get-screen-list">Get Screen List</h2>
+
+        
+      
+        
+        <blockquote>
+<p>GET : /getScreenEvent</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: array of [Screen_Id, Screen_Name]</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Get Screen List whose time is to be recorded in other request</p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.getScreen = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for getScreen"</span>);
+    <span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT * FROM moralDilemma.screens"</span>;
+    connection.query(query, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+        <span class="hljs-keyword">if</span>(err){
+            <span class="hljs-built_in">console</span>.log(err);
+            res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Oops Something went wrong !!"</span>});
+        } <span class="hljs-keyword">else</span>{
+            res.json({status:<span class="hljs-literal">true</span>, result: result});            
+        }
+    });
+};</pre></div>
+        
+      
+        
+        <h2 id="record-screen-event">Record Screen Event</h2>
+
+        
+      
+        
+        <blockquote>
+<p>POST : /recordScreen</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Body: User_Id, Round_Id, Screen_Id, Time_Spend </p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Response: Successful Response</p>
+</blockquote>
+
+        
+      
+        
+        <blockquote>
+<p>Description: Record Screen Event time </p>
+</blockquote>
+
+        
+          <div class='highlight'><pre>
+exports.recordScreen = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Request for recordScreen: "</span>+ <span class="hljs-built_in">JSON</span>.stringify(req.body));
+    <span class="hljs-keyword">if</span>(!!req.body.User_Id &amp;&amp; !!req.body.Round_Id &amp;&amp; !!req.body.Screen_Id &amp;&amp; !!req.body.Time_Spend) {
+        req.body.Created_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+        req.body.Updated_On = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
+
+        <span class="hljs-keyword">var</span> query = <span class="hljs-string">"INSERT INTO moralDilemma.screensRecord (User_Id, Round_Id, Screen_Id, Time_Spend, Created_On, Updated_On) VALUES (?,?, ?, ?, ?, ?)"</span>;
+
+        <span class="hljs-keyword">var</span> values = [req.body.User_Id, req.body.Round_Id, req.body.Screen_Id, req.body.Time_Spend, req.body.Created_On, req.body.Updated_On];
+
+        connection.query(query, values, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+            <span class="hljs-keyword">if</span>(err){
+                <span class="hljs-built_in">console</span>.log(err);
+                <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Oops Something went wrong !!"</span>});
+            }
+            <span class="hljs-keyword">else</span>{
+                <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">true</span>, result: result});                
+            }
+        });            
+    } <span class="hljs-keyword">else</span>{
+        <span class="hljs-built_in">console</span>.log(query);
+        <span class="hljs-keyword">return</span> res.json({status:<span class="hljs-literal">false</span>, info: <span class="hljs-string">"Insufficient information !!"</span>});
+    }
+};</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>
