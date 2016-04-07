@@ -24,17 +24,21 @@ exports.getQuestionList = function(req, res){
 
     if(!level) res.json({status:false, info: "Insufficient information !!"});
     else{
-        var query = "SELECT options.Question_Id, options.Option_Id, options.Level,  options.Option_String, questions.Question_String"+
-                    " FROM options INNER JOIN questions "+
-                    "ON options.Question_Id=questions.Question_Id WHERE options.Level = "+level;
 
-        connection.query(query, function(err, result) {
-            if (err) {
-                console.log(err);
-                res.json({status:false, info: "Opps something went wrong !!"});
-            } else {
-                res.json({status:true, result:result});
-            }
+        var SP_CALL = "CALL getQuestionList("+level+");";
+        console.log(SP_CALL);
+
+        connection.query(SP_CALL, function(err, rows)
+        {
+          if (err){
+            console.log(err);
+            console.log("Fail to get questions list");
+            res.json({status:true, info: "Fail to get questions list"});
+          }
+          else{
+            console.log(rows[0]);            
+            res.json({status:true, result: rows[0]});
+          }
 
         });
     }
@@ -60,37 +64,47 @@ exports.registerUser = function(req, res){
         req.body.Created_On = (new Date()).getTime();
         req.body.Updated_On = (new Date()).getTime();
 
-        var query = "SELECT * FROM moralDilemma.users " +
-            "WHERE Unique_User_Id='" + req.body.Unique_User_Id+"'";
+        var SP_CALL = "CALL checkExistingUser('"+req.body.Unique_User_Id+"');";
+        console.log(SP_CALL);
 
-        connection.query(query, function(err, result) {
-            if (err) {
-                console.log(err);
-                res.json({status:false, info: "Opps something went wrong !!"});
-            } else {
-                if(result.length){
+        connection.query(SP_CALL, function(err, rows){
+          if (err){
+            console.log(err);
+            console.log("Fail to checkExistingUser");
+            res.json({status:true, info: "Fail to checkExistingUser"});
+          }
+          else{
+            console.log(rows[0]);            
+            if(rows[0].length){
                     var obj = {
-                        User_Id : result[0].User_Id,
+                        User_Id : rows[0][0].User_Id,
                         Round_Id: uuid.v1()
                     }
                     console.log("Response of registerUser"+ JSON.stringify(obj));
                     res.json({status:true, result: obj});
-                }
-                else{
-                    var query = "INSERT INTO moralDilemma.users (User_Name, Unique_User_Id, User_Type, Created_On, Updated_On) VALUES (?,?,?,?,?)";
+            }
+            else{
+                var SP_CALL = "CALL createNewUser('"+req.body.User_Name+"','"+req.body.Unique_User_Id+"','"+req.body.User_Type+"',"+req.body.Created_On+","+req.body.Updated_On+");";
+                console.log(SP_CALL);
 
-                    var values = [req.body.User_Name, req.body.Unique_User_Id, req.body.User_Type, req.body.Created_On, req.body.Updated_On];
-
-                    connection.query(query, values, function(err, result) {
+                connection.query(SP_CALL, function(err, rows)
+                {
+                  if (err){
+                    console.log(err);
+                    console.log("Fail to create new user");
+                    res.json({status:true, info: "Fail to create new user"});
+                  }
+                  else{
                         var obj = {
-                            User_Id : result.insertId,
+                            User_Id : rows[0][0].User_Id,
                             Round_Id: uuid.v1()
                         }
-                        console.log("Response of registerUser"+ JSON.stringify(obj));
+                        console.log("Successfully registered new user"+ JSON.stringify(obj));
                         res.json({status:true, result: obj});
-                    });
-                }
+                  }
+                });
             }
+          }
 
         });
         
