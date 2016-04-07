@@ -32,8 +32,8 @@ exports.getQuestionList = function(req, res){
         {
           if (err){
             console.log(err);
-            console.log("Fail to get questions list");
-            res.json({status:true, info: "Fail to get questions list"});
+            console.log("Fails to get questions list");
+            res.json({status:true, info: "Fails to get questions list"});
           }
           else{
             console.log(rows[0]);            
@@ -70,8 +70,8 @@ exports.registerUser = function(req, res){
         connection.query(SP_CALL, function(err, rows){
           if (err){
             console.log(err);
-            console.log("Fail to checkExistingUser");
-            res.json({status:true, info: "Fail to checkExistingUser"});
+            console.log("Fails to checkExistingUser");
+            res.json({status:true, info: "Fails to checkExistingUser"});
           }
           else{
             console.log(rows[0]);            
@@ -91,8 +91,8 @@ exports.registerUser = function(req, res){
                 {
                   if (err){
                     console.log(err);
-                    console.log("Fail to create new user");
-                    res.json({status:true, info: "Fail to create new user"});
+                    console.log("Fails to create new user");
+                    res.json({status:true, info: "Fails to create new user"});
                   }
                   else{
                         var obj = {
@@ -125,36 +125,29 @@ exports.registerUser = function(req, res){
 
 exports.registerAnswers = function(req, res){
     console.log("Request for registerAnswers: " + JSON.stringify(req.body));
-    var query = "INSERT INTO moralDilemma.answers (User_Id, Round_Id, Question_Id, Option_Id, Option_Value, Is_Final, Time_Spend, Created_On, Updated_On) values ";
+    
     for(var i =0; i<req.body.length; i++){  
         if(!!req.body[i].User_Id && !!req.body[i].Round_Id && !!req.body[i].Question_Id && !!req.body[i].Option_Id && !!req.body[i].Option_Value  && !!req.body[i].Time_Spend ) {
+          
+        var Created_On = (new Date()).getTime();
+        var Updated_On = (new Date()).getTime();
+        var SP_CALL = "CALL registeranswers("+req.body[i].User_Id+",'"+req.body[i].Round_Id+"',"+req.body[i].Question_Id+","+req.body[i].Option_Id+",'"+req.body[i].Option_Value+"',"+req.body[i].Is_Final+","+req.body[i].Time_Spend+","+Created_On+","+ Updated_On+");";
+        
+        console.log(SP_CALL);
+        connection.query(SP_CALL, function(err, rows){
+          if (err){
+            console.log(err);
+            console.log("Fails to register answer analytic");
+          }
+          else{
+            console.log(rows);            
+            console.log("Successfully registered answer");
+          }
 
-            req.body[i].Created_On = (new Date()).getTime();
-            req.body[i].Updated_On = (new Date()).getTime();
-           
-           var localValue = "("+req.body[i].User_Id+",'"+req.body[i].Round_Id+"',"+req.body[i].Question_Id+","+req.body[i].Option_Id+",'"+req.body[i].Option_Value+"',"+req.body[i].Is_Final+","+req.body[i].Time_Spend+","+req.body[i].Created_On+","+ req.body[i].Updated_On+")";
-
-            if(i!= req.body.length-1)
-                localValue = localValue+", ";
-            else
-                localValue = localValue+";"
-
-            query = query+localValue;
-
-            
-        } else{
-            console.log(query);
-            return res.json({status:false, info: "Insufficient information !!"});
+        });
         }
     }
-    connection.query(query, function(err, result) {
-        if (err) {
-            console.log(err);
-            res.json({status:false, info: "Opps something went wrong !!"});
-        } else {
-            res.json({status:true, result:result});
-        }
-    });
+    return res.json({status:true, info: "Successfully registered answer"});
 };
 
 // ## Register Incomplete Answer Event
@@ -182,8 +175,8 @@ exports.registerIncompleteAnswer = function(req, res){
         {
           if (err){
             console.log(err);
-            console.log("Fail to register incomplete answer analytic");
-            res.json({status:true, info: "Fail to register incomplete answer analytic"});
+            console.log("Fails to register incomplete answer analytic");
+            res.json({status:true, info: "Fails to register incomplete answer analytic"});
           }
           else{
             console.log(rows);            
@@ -226,8 +219,8 @@ exports.registerLog = function(req, res){
         {
           if (err){
             console.log(err);
-            console.log("Fail to register log analytic");
-            res.json({status:true, info: "Fail to register log analytic"});
+            console.log("Fails to register log analytic");
+            res.json({status:true, info: "Fails to register log analytic"});
           }
           else{
             console.log(rows);            
@@ -265,8 +258,8 @@ exports.registerLoadingTime = function(req, res){
         {
           if (err){
             console.log(err);
-            console.log("Fail to register app loading time analytic");
-            res.json({status:true, info: "Fail to register app loading time analytic"});
+            console.log("Fails to register app loading time analytic");
+            res.json({status:true, info: "Fails to register app loading time analytic"});
           }
           else{
             console.log(rows);            
@@ -301,8 +294,8 @@ exports.getScreen = function(req, res){
     {
       if (err){
         console.log(err);
-        console.log("Fail to get screen list");
-        res.json({status:true, info: "Fail to get screen list"});
+        console.log("Fails to get screen list");
+        res.json({status:true, info: "Fails to get screen list"});
       }
       else{
         console.log(rows[0]);
@@ -335,8 +328,8 @@ exports.recordScreen = function(req, res){
         {
           if (err){
             console.log(err);
-            console.log("Fail to record screen analytic");
-            res.json({status:true, info: "Fail to record screen analytic"});
+            console.log("Fails to record screen analytic");
+            res.json({status:true, info: "Fails to record screen analytic"});
           }
           else{
             console.log(rows);            
