@@ -161,13 +161,24 @@ exports.registerIncompleteAnswer = function(req, res){
         req.body.Created_On = (new Date()).getTime();
         req.body.Updated_On = (new Date()).getTime();
 
-        var query = "INSERT INTO moralDilemma.incompleteAnswers (User_Id, Round_Id, Question_Id, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?)";
+        var SP_CALL = "CALL registerIncompleteAnswer("+req.body.User_Id+",'"+req.body.Round_Id+"',"+req.body.Question_Id+","+req.body.Created_On+","+req.body.Updated_On+");";
+        console.log(SP_CALL);
 
-        var values = [req.body.User_Id, req.body.Round_Id, req.body.Question_Id, req.body.Created_On, req.body.Updated_On];
+        connection.query(SP_CALL, function(err, rows)
+        {
+          if (err){
+            console.log(err);
+            console.log("Fail to register incomplete answer analytic");
+            res.json({status:true, info: "Fail to register incomplete answer analytic"});
+          }
+          else{
+            console.log(rows);            
+            console.log("Successfully registered incomplete answer analytic");
+            res.json({status:true, info: "Successfully registered incomplete answer analytic"});
+          }
 
-        connection.query(query, values, function(err, result) {
-            res.json({status:true, result: result});
-        });            
+        });
+        
     } else{
         console.log(query);
         return res.json({status:false, info: "Insufficient information !!"});
@@ -192,15 +203,25 @@ exports.registerLog = function(req, res){
         req.body.Created_On = (new Date()).getTime();
         req.body.Updated_On = (new Date()).getTime();
 
-        var comment = !!req.body.Comment ? req.body.Comment : "No Comment";
+        var Comment = !!req.body.Comment ? req.body.Comment : "No Comment";
 
-        var query = "INSERT INTO moralDilemma.logs (User_Id, Round_Id, Log_Type, Comment, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?, ?)";
+        var SP_CALL = "CALL registerLog("+req.body.User_Id+",'"+req.body.Round_Id+"','"+req.body.Log_Type+"','"+req.body.Comment+"',"+req.body.Created_On+","+req.body.Updated_On+");";
+        console.log(SP_CALL);
 
-        var values = [req.body.User_Id, req.body.Round_Id, req.body.Log_Type, comment, req.body.Created_On, req.body.Updated_On];
+        connection.query(SP_CALL, function(err, rows)
+        {
+          if (err){
+            console.log(err);
+            console.log("Fail to register log analytic");
+            res.json({status:true, info: "Fail to register log analytic"});
+          }
+          else{
+            console.log(rows);            
+            console.log("Successfully registered log analytic");
+            res.json({status:true, info: "Successfully registered log analytic"});
+          }
 
-        connection.query(query, values, function(err, result) {
-            res.json({status:true, result: result});
-        });            
+        });          
     } else{
         console.log(query);
         return res.json({status:false, info: "Insufficient information !!"});
@@ -223,13 +244,24 @@ exports.registerLoadingTime = function(req, res){
         req.body.Created_On = (new Date()).getTime();
         req.body.Updated_On = (new Date()).getTime();
 
-        var query = "INSERT INTO moralDilemma.loadingtime (User_Id, Round_Id, Time_Taken, Created_On, Updated_On) VALUES (?, ?, ?, ?, ?)";
+        var SP_CALL = "CALL registerLoadingTime("+req.body.User_Id+",'"+req.body.Round_Id+"',"+req.body.Time_Taken+","+req.body.Created_On+","+req.body.Updated_On+");";
+        console.log(SP_CALL);
 
-        var values = [req.body.User_Id, req.body.Round_Id, req.body.Time_Taken, req.body.Created_On, req.body.Updated_On];
+        connection.query(SP_CALL, function(err, rows)
+        {
+          if (err){
+            console.log(err);
+            console.log("Fail to register app loading time analytic");
+            res.json({status:true, info: "Fail to register app loading time analytic"});
+          }
+          else{
+            console.log(rows);            
+            console.log("Successfully registered app loading time analytic");
+            res.json({status:true, info: "Successfully registered app loading time analytic"});
+          }
 
-        connection.query(query, values, function(err, result) {
-            res.json({status:true, result: result});
-        });            
+        }); 
+
     } else{
         console.log(query);
         return res.json({status:false, info: "Insufficient information !!"});
@@ -247,15 +279,23 @@ exports.registerLoadingTime = function(req, res){
 
 exports.getScreen = function(req, res){
     console.log("Request for getScreen");
-    var query = "SELECT * FROM moralDilemma.screens";
-    connection.query(query, function(err, result) {
-        if(err){
-            console.log(err);
-            res.json({status:false, info: "Oops Something went wrong !!"});
-        } else{
-            res.json({status:true, result: result});            
-        }
-    });
+        
+    var SP_CALL = "CALL getScreen();";
+    console.log(SP_CALL);
+
+    connection.query(SP_CALL, function(err, rows)
+    {
+      if (err){
+        console.log(err);
+        console.log("Fail to get screen list");
+        res.json({status:true, info: "Fail to get screen list"});
+      }
+      else{
+        console.log(rows[0]);
+        res.json({status:true, result: rows[0]});
+      }
+
+    }); 
 };
 
 // ## Record Screen Event
@@ -274,19 +314,24 @@ exports.recordScreen = function(req, res){
         req.body.Created_On = (new Date()).getTime();
         req.body.Updated_On = (new Date()).getTime();
 
-        var query = "INSERT INTO moralDilemma.screensRecord (User_Id, Round_Id, Screen_Id, Time_Spend, Created_On, Updated_On) VALUES (?,?, ?, ?, ?, ?)";
+        var SP_CALL = "CALL recordScreen("+req.body.User_Id+",'"+req.body.Round_Id+"',"+req.body.Screen_Id+","+req.body.Time_Spend+","+req.body.Created_On+","+req.body.Updated_On+");";
+        console.log(SP_CALL);
 
-        var values = [req.body.User_Id, req.body.Round_Id, req.body.Screen_Id, req.body.Time_Spend, req.body.Created_On, req.body.Updated_On];
+        connection.query(SP_CALL, function(err, rows)
+        {
+          if (err){
+            console.log(err);
+            console.log("Fail to record screen analytic");
+            res.json({status:true, info: "Fail to record screen analytic"});
+          }
+          else{
+            console.log(rows);            
+            console.log("Successfully recorded screen analytic");
+            res.json({status:true, info: "Successfully recorded screen analytic"});
+          }
 
-        connection.query(query, values, function(err, result) {
-            if(err){
-                console.log(err);
-                return res.json({status:false, info: "Oops Something went wrong !!"});
-            }
-            else{
-                return res.json({status:true, result: result});                
-            }
-        });            
+        }); 
+
     } else{
         console.log(query);
         return res.json({status:false, info: "Insufficient information !!"});
