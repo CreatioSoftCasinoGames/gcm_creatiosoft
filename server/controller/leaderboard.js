@@ -10,6 +10,7 @@ var leaderboardController = {};
  */
 
 leaderboardController.getAll = function (req,res,next) {
+  console.log("Request for getall : " + JSON.stringify(req.params.level));
     leaderboard.getAll(function(err, result) {
       if (!err) {
           return res.json({status:true, result: result});
@@ -24,6 +25,7 @@ leaderboardController.getAll = function (req,res,next) {
  */
 
 leaderboardController.getByLevel = function (req,res,next) {
+    console.log("Request for get by level : " + JSON.stringify(req.params.level));
     leaderboard.getByLevel(req.params.level, function(err, result) {
       if (!err) {
           return res.json({status:true, result: result});
