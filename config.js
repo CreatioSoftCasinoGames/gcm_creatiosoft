@@ -57,7 +57,15 @@ config.defaultSips = [
 
 config.host = "127.0.0.1";
 
-config.port = "27017"
+config.port = "27017";
+
+config.projectPath = __dirname;
+
+config.validFileExtention = ["mp4"];
+
+config.ip = "127.0.0.1";
+
+config.apprunningport = 3000;
 
 
 module.exports = config;

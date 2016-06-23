@@ -77,6 +77,8 @@ function onError(error) {
   }
 }
 
+console.log("DIRECTORY : " + __dirname);
+
 /**
  * Event listener for HTTP server "listening" event.
  */

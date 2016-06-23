@@ -59,3 +59,11 @@ var playerLoggingHistory = new mongoose.Schema({
 });
 playerLoggingHistory.index({emailId:1});
 mongoose.model('playerLoggingHistory',playerLoggingHistory);
+
+var videoList = new mongoose.Schema({
+    gameName : {type:"String"},
+    fileName : {type:"String"},
+    lastUpdated : {type:"Number"}
+});
+playerLoggingHistory.index({gameName:1});
+mongoose.model('videoList',videoList);
