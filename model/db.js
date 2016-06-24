@@ -43,7 +43,8 @@ var player =  new mongoose.Schema({
     handsWon        :   {type:"Number"},
     createdOn       :   {type:"Number"},
     isLoggedIn      :   {type:"Boolean",default:false},
-    lastUpdateOn    :   {type:"Number"}
+    lastUpdateOn    :   {type:"Number"},
+    deviceId        :   {type:"String"}
 });
 player.index({uniqueToken:1});
 player.index({emailId:1});
@@ -63,7 +64,8 @@ mongoose.model('playerLoggingHistory',playerLoggingHistory);
 var videoList = new mongoose.Schema({
     gameName : {type:"String"},
     fileName : {type:"String"},
-    lastUpdated : {type:"Number"}
+    lastUpdated : {type:"Number"},
+    ver          :{type:Number}
 });
 playerLoggingHistory.index({gameName:1});
 mongoose.model('videoList',videoList);

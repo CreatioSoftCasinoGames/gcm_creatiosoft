@@ -3,6 +3,9 @@ var mongoose = require( 'mongoose' );
 var shortId = require("shortid");
 var express = require('express');
 var path    = require('path');
+var schedule = require('node-schedule');
+var async   = require('async');
+
 var config = require("../config");
 var router = express.Router(),
     multer = require('multer'),
@@ -79,17 +82,19 @@ router.post('/upload',function(req, res) {
         if(req.fileValidationError){
             res.send(req.fileValidationError);
         } else if(err) {
-            console.log('Error Occured');
-            res.end('Error Occured');
+            console.log('Error Occured' + err);
+            res.end('Error Occured' + err);
         } else {
             console.log("/upload : "+ JSON.stringify(req.file));
             videoList.update({gamename:req.file.gamename},
-                {$set:
-                    {
-                        gamename:req.file.gamename,
-                        fileName:req.file.filename,
-                        lastUpdated:new Date().getTime()
-                    }
+                {
+                    $set:
+                        {
+                            gamename:req.file.gamename,
+                            fileName:req.file.filename,
+                            lastUpdated:new Date().getTime()
+                        },
+                 $inc:{ver:1}
                 },
                 {upsert:true},
                 function(err,updated){
@@ -118,7 +123,7 @@ router.get("/download/:filename",function(req,res){
             } else{
                 console.log("Video available !!");
                 var downloadLink = "http://"+config.ip+":"+config.apprunningport+"/uploads/"+result.fileName;
-                res.json({status:true,dwLink:downloadLink});
+                res.json({status:true,dwLink:downloadLink,uploadedOn:result.lastUpdated });
             }
         } else {
             console.log("Something went wrong !! ");
@@ -128,7 +133,11 @@ router.get("/download/:filename",function(req,res){
 });
 
 router.get('/register', function(req, res, next) {
-    res.send('register with a resource from user');
+    res.json({status:true,info:'register with a resource from user'});
+});
+
+router.post('/getdeviceid',function(req,res,next){
+    res.json({status:true,deviceId:shortId.generate()});
 });
 
 router.post('/register', function (req, res, next) {
@@ -175,9 +184,9 @@ router.post('/register', function (req, res, next) {
 
 router.post('/login', function (req, res, next) {
     console.log("Request received for login " + JSON.stringify(req.body));
-    if (!!req.body.emailId && !!req.body.password && !!req.body.gameName) {
+    if (!!req.body.emailId && !!req.body.password && !!req.body.gameName && !!req.body.deviceId) {
         playerCollection.findOne({emailId:req.body.emailId},
-            {name:1,emailId:1,uniqueToken:1,noOfChips:1,noOfSips:1,handsPlayed:1,handsWon:1,_id:-1,password:1},
+            {name:1,emailId:1,uniqueToken:1,noOfChips:1,noOfSips:1,handsPlayed:1,handsWon:1,_id:-1,password:1,deviceId:1},
             function(err,qResult){
             if(!err && qResult){
                 var encodedPwd = qResult.password;
@@ -195,17 +204,23 @@ router.post('/login', function (req, res, next) {
                     qResult["password"] = "";
                     qResult["totalSips"] = ttlSips;
                     console.log("Total Sips " + ttlSips);
-                    var tempObj = {isLoggedIn:true,"lastUpdateOn":(new Date().getTime())};
-                    playerCollection.findOneAndUpdate({emailId:req.body.emailId},{$set:tempObj},{upsert:false,new:false},function(err,updated){
-                        if(!err && updated){
-                            console.log("Every thing updated successfully !!" +updated);
-                            res.json({status:true,info:"Login successful !!",totalSips:ttlSips, isLoggedIn:updated.isLoggedIn,playerInfo: qResult});
-                        } else {
-                            console.log("Unexpected error while updating !! " + err);
-                            res.json({status: false, info: "Unexpected error while updating !!"});
-                        }
-                    })
-
+                    var tempObj = {"isLoggedIn":true,"lastUpdateOn":(new Date().getTime()),deviceId:req.body.deviceId};
+                    if(qResult.deviceId == req.body.deviceId || !qResult.deviceId){
+                        console.log("Player already logged in from same device !!");
+                        playerCollection.findOneAndUpdate({emailId:req.body.emailId},{$set:tempObj},{upsert:false,new:false},function(err,updated){
+                            if(!err && updated){
+                                console.log("Every thing updated successfully !!" +updated);
+                                res.json({status:true,info:"Login successful !!",totalSips:ttlSips, isLoggedIn:updated.isLoggedIn,playerInfo: qResult});
+                            } else {
+                                console.log("Unexpected error while updating !! " + err);
+                                res.json({status: false, info: "Unexpected error while updating !!"});
+                            }
+                        })
+                    } else {
+                        //create new
+                        console.log("Player logged in from different device !!");
+                        res.json({status:false,info:"Player logged in from different device !!",isLoggedIn:true})
+                    }
                 } else {
                     logPlayerActivityHistory (req.body.emailId,"login",qResult.noOfChips,req.body.gameName,"failed");
                     console.log("Incorrect password entered !!");
@@ -216,6 +231,27 @@ router.post('/login', function (req, res, next) {
                 res.json({status: false, info: "We could not find you please register yourself !! "});
             }
         });
+    } else {
+        console.log("One or more mandatory fields are missing !!");
+        res.json({status: false, info: "One or more mandatory fields are missing !!", reqBody: req.body});
+    }
+});
+
+router.post('/alive',function(req,res,next){
+    console.log("Request received for alive " + JSON.stringify(req.body));
+    if(!!req.body.emailId && !!req.body.gameName && !!req.body.deviceId){
+        playerCollection.findOneAndUpdate({emailId:req.body.emailId,deviceId:req.body.deviceId},
+            {$set:{lastUpdateOn:new Date().getTime()}},
+            {upsert:false,new:true},
+            function(err,updated){
+                if(!err && updated){
+                    console.log("Timestamp updated !!");
+                    res.json({status:true,info:"Timestamp updated !!"});
+                } else {
+                    console.log("Could not timestamp updated !!");
+                    res.json({status:false,info:"Could not timestamp updated !!"});
+                }
+            });
     } else {
         console.log("One or more mandatory fields are missing !!");
         res.json({status: false, info: "One or more mandatory fields are missing !!", reqBody: req.body});
@@ -255,34 +291,43 @@ router.post('/ingameupdate',function(req, res, next){
 
 router.post('/logout', function (req, res, next) {
     console.log("Request received for logout " + JSON.stringify(req.body));
-    var noOfChips = !!req.body.keysToUpdate.noOfChips ? req.body.keysToUpdate.noOfChips : 0,
-        noOfSips  = !!req.body.keysToUpdate.noOfSips ? req.body.keysToUpdate.noOfSips : 0,
-        handsPlayed = !!req.body.keysToUpdate.handsPlayed ? req.body.keysToUpdate.handsPlayed : 0,
-        handsWon = !!req.body.keysToUpdate.handsWon ? req.body.keysToUpdate.handsWon : 0;
-    playerCollection.findOneAndUpdate({emailId:req.body.emailId,"noOfSips.gameName":req.body.gameName},
-        {
-            $set: {
-                "noOfSips.$.sips": noOfSips,
-                "noOfChips": noOfChips,
-                "handsPlayed": handsPlayed,
-                "handsWon": handsWon,
-                "isLoggedIn": false,
-                "lastUpdateOn":new Date().getTime()
+    if (!!req.body.emailId && !!req.body.keysToUpdate && !!req.body.gameName && !!req.body.deviceId) {
+        var noOfChips = !!req.body.keysToUpdate.noOfChips ? req.body.keysToUpdate.noOfChips : 0,
+            noOfSips = !!req.body.keysToUpdate.noOfSips ? req.body.keysToUpdate.noOfSips : 0,
+            handsPlayed = !!req.body.keysToUpdate.handsPlayed ? req.body.keysToUpdate.handsPlayed : 0,
+            handsWon = !!req.body.keysToUpdate.handsWon ? req.body.keysToUpdate.handsWon : 0;
+        console.log("noOfChips :" + noOfChips + " noOfSips : " + noOfSips + " handsPlayed : " + handsPlayed + " handsWon : " + handsWon);
+        playerCollection.findOneAndUpdate({emailId: req.body.emailId, "noOfSips.gameName": req.body.gameName},
+            {
+                $set: {
+                    "noOfSips.$.sips": noOfSips,
+                    "noOfChips": noOfChips,
+                    "handsPlayed": handsPlayed,
+                    "handsWon": handsWon,
+                    "isLoggedIn": false,
+                    "lastUpdateOn": new Date().getTime()
+
+                },
+                $unset: {deviceId: ""}
+            },
+            {upsert: false, new: true},
+            function (err, updtResult) {
+                console.log("findOneAndUpdate : Error" + err + "   Result " + updtResult);
+                if (!err && updtResult) {
+                    console.log("Values updated successfully !!" + updtResult);
+                    logPlayerActivityHistory(updtResult.emailId, "logout", updtResult.noOfChips, req.body.gameName, "success");
+                    res.json({status: true, info: "User logged out !!"});
+                } else {
+                    console.log("Unable to update value !!");
+                    logPlayerActivityHistory(req.body.emailId, "logout", updtResult.noOfChips, req.body.gameName, "failed");
+                    res.json({status: false, info: "Unable to update your stats !!"});
+                }
             }
-        },
-        {upsert:false,new:true},
-        function(err,updtResult){
-            if(!err && updtResult){
-                console.log("Values updated successfully !!" + updtResult);
-                logPlayerActivityHistory (updtResult.emailId,"logout",updtResult.noOfChips,req.body.gameName,"success");
-                res.json({status:true,info:"User logged out !!"});
-            } else {
-                console.log("Unable to update value !!");
-                logPlayerActivityHistory (req.body.emailId,"logout",updtResult.noOfChips,req.body.gameName,"failed");
-                res.json({status:false,info:"Unable to update your stats !!"});
-            }
-        }
-    );
+        );
+    } else {
+        console.log("One or more mandatory fields are missing !!");
+        res.json({status: false, info: "One or more mandatory fields are missing !!", reqBody: req.body});
+    }
 });
 
 function logPlayerActivityHistory (emailId,eventType,walletAmount,gameName,attempt){
@@ -301,5 +346,91 @@ function logPlayerActivityHistory (emailId,eventType,walletAmount,gameName,attem
         }
     });
 }
+
+
+function convertMS(ms) {
+    var d, h, m, s;
+    s = Math.floor(ms / 1000);
+    m = Math.floor(s / 60);
+    return { m: m, s: s };
+}
+
+/*
+function fullConvertor(ms){
+ s = s % 60;
+ h = Math.floor(m / 60);
+ m = m % 60;
+ d = Math.floor(h / 24);
+ h = h % 24;
+ return { d: d, h: h, m: m, s: s };
+
+}
+ */
+
+
+
+var j = schedule.scheduleJob('2 * * * * *', function(){
+    console.log('The answer to life, the universe, and everything!' + new Date());
+
+    playerCollection.find({isLoggedIn:true},{emailId:1,lastUpdateOn:1},function(err,results){
+        if(!err){
+            if(results.length > 0){
+                console.log("PLayers to process !!" + results)
+                async.each(results,function(player,eCB){
+                    console.log("player in scheduler " + JSON.stringify(player));
+                    var currentTime = new Date().getTime();
+                    console.log("current time : " + currentTime);
+                    var timeDiff = parseInt(currentTime) - parseInt(player.lastUpdateOn);
+                    var timeDiffInMS = convertMS(timeDiff);
+                    console.log("Time difference "+JSON.stringify(timeDiffInMS));
+                    Boolean(parseInt(timeDiffInMS.m) >= parseInt(config.defaultLogoutTime));
+                    if(parseInt(timeDiffInMS.m) >= parseInt(config.defaultLogoutTime) && parseInt(timeDiffInMS.s) > 0){
+                        console.log("Criteria matched for logout");
+                        playerCollection.findOneAndUpdate({emailId:player.emailId},
+                            {
+                                $set:{
+                                    isLoggedIn:false,
+                                    lastUpdateOn: new Date().getTime()
+                                },
+                                $unset:{
+                                    deviceId:""
+                                }
+                            },
+                            {upsert: false, new: true},
+                            function(err,updatedResult){
+
+                                if(!err && updatedResult){
+                                    console.log("Player logged out successfully");
+                                    logPlayerActivityHistory(updatedResult.emailId, "logout", updatedResult.noOfChips, "Scheduler", "success");
+                                    eCB(null);
+                                } else {
+                                    logPlayerActivityHistory(updatedResult.emailId, "logout", updatedResult.noOfChips, "Scheduler", "failed");
+                                    eCB(err);
+                                }
+                            }
+
+                        );
+                    }else{
+                        console.log("Condition did not matched for logout!!");
+                        eCB(null);
+                    }
+                },function(err){
+                    if(!err){
+                        console.log("Player logged out successfully :):)");
+                    } else {
+                        console.log("Error while logging out player " + err);
+                    }
+                });
+            } else {
+                console.log("No result to execute !!");
+            }
+        } else {
+            console.log("Error occurred while fetching active players in scheduler !!" + err)
+        }
+    });
+});
+
+
+
 
 module.exports = router;

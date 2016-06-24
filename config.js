@@ -63,9 +63,10 @@ config.projectPath = __dirname;
 
 config.validFileExtention = ["mp4"];
 
-config.ip = "127.0.0.1";
+config.ip = "127.0.0.1"; // change this &
 
-config.apprunningport = 3000;
+config.apprunningport = 9080;
 
+config.defaultLogoutTime = 5;
 
 module.exports = config;
