@@ -205,7 +205,7 @@ router.post('/login', function (req, res, next) {
                     qResult["totalSips"] = ttlSips;
                     console.log("Total Sips " + ttlSips);
                     
-                    var addAmount = (qResult.noOfChips < 100) ? config.defaultChips : 0;
+                    var addAmount = (qResult.noOfChips < 100) ? (qResult.noOfChips + config.defaultChips) : 0;
                     var tempObj = {"isLoggedIn":true,"lastUpdateOn":(new Date().getTime()),deviceId:req.body.deviceId};
                     console.log("addAmount : " + addAmount +" typeof " + typeof addAmount) ;
                     if(qResult.deviceId == req.body.deviceId || !qResult.deviceId){
@@ -213,6 +213,10 @@ router.post('/login', function (req, res, next) {
                         playerCollection.findOneAndUpdate({emailId:req.body.emailId},{$set:tempObj,$inc:{noOfChips:addAmount}},{upsert:false,new:false},function(err,updated){
                             if(!err && updated){
                                 console.log("Every thing updated successfully !!" +updated);
+                                // Jugaad for updating noOfChips !!
+                                if(addAmount){
+                                    qResult["noOfChips"] = addAmount;
+                                }
                                 res.json({status:true,info:"Login successful !!",totalSips:ttlSips, isLoggedIn:updated.isLoggedIn,playerInfo: qResult});
                             } else {
                                 console.log("Unexpected error while updating !! " + err);
