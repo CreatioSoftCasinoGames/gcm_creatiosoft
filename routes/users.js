@@ -204,10 +204,13 @@ router.post('/login', function (req, res, next) {
                     qResult["password"] = "";
                     qResult["totalSips"] = ttlSips;
                     console.log("Total Sips " + ttlSips);
+                    
+                    var addAmount = (qResult.noOfChips < 100) ? config.defaultChips : 0;
                     var tempObj = {"isLoggedIn":true,"lastUpdateOn":(new Date().getTime()),deviceId:req.body.deviceId};
+                    console.log("addAmount : " + addAmount +" typeof " + typeof addAmount) ;
                     if(qResult.deviceId == req.body.deviceId || !qResult.deviceId){
                         console.log("Player already logged in from same device !!");
-                        playerCollection.findOneAndUpdate({emailId:req.body.emailId},{$set:tempObj},{upsert:false,new:false},function(err,updated){
+                        playerCollection.findOneAndUpdate({emailId:req.body.emailId},{$set:tempObj,$inc:{noOfChips:addAmount}},{upsert:false,new:false},function(err,updated){
                             if(!err && updated){
                                 console.log("Every thing updated successfully !!" +updated);
                                 res.json({status:true,info:"Login successful !!",totalSips:ttlSips, isLoggedIn:updated.isLoggedIn,playerInfo: qResult});
