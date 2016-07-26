@@ -61,7 +61,7 @@ config.port = "27017";
 
 config.projectPath = __dirname;
 
-config.validFileExtention = ["mp4"];
+config.validFileExtention = ["mp4","ogg"];
 
 config.ip = "52.77.107.134"; // change this &
 
