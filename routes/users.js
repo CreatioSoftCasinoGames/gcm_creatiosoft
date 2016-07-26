@@ -42,7 +42,7 @@ var incomingFileFilter = function(req, file, cb){
     console.log("MIME TYPE : " + type);
     var typeArray = type.split("/");
     console.log("B4 validation !!");
-    if (typeArray[0] == "video" && ((config.validFileExtention).indexOf(typeArray[1]) > -1)) { // || typeArray[0] == "image"
+    if ((typeArray[0] == "video" || typeArray[0] == "audio") && ((config.validFileExtention).indexOf(typeArray[1]) > -1)) { // || typeArray[0] == "image"
         console.log("Condition satisfied !!");
         cb(null, true);
     }else {
