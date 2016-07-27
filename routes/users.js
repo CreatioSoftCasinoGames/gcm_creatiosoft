@@ -142,7 +142,7 @@ router.post('/getdeviceid',function(req,res,next){
 
 router.post('/register', function (req, res, next) {
     console.log("Request received for registration " + JSON.stringify(req.body));
-    if (!!req.body.name && !!req.body.emailId && !!req.body.password && !!req.body.gameName) {
+    if (!!req.body.name && !!req.body.emailId && !!req.body.password && !!req.body.gameName && !!req.body.mobNo) {
         playerCollection.findOne({emailId: req.body.emailId}, function (err, result) {
             if (!err && result) {
                 console.log("Email Id is already registered !!" + result.emailId);
@@ -194,7 +194,7 @@ router.post('/login', function (req, res, next) {
                 var toBuffer = new Buffer(encodedPwd,"base64");
                 var decryptedPwd = crypto.privateDecrypt(config.privateKey,toBuffer);
                 console.log("Decrypted Pwd : " + decryptedPwd + " type of " + typeof decryptedPwd);
-                if(decryptedPwd.toString() === req.body.password){
+                if(decryptedPwd.toString() === req.body.password || || qResult.mobNo == req.body.password){
                     logPlayerActivityHistory (qResult.emailId,"login",qResult.noOfChips,req.body.gameName,"success");
                     console.log("Login successful for " + qResult.name + " ==> " + qResult.emailId);
                     var ttlSips = 0;
